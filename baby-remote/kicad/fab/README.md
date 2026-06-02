@@ -10,7 +10,8 @@ CLI=/Applications/KiCad/KiCad.app/Contents/MacOS/kicad-cli
   --layers F.Cu,B.Cu,F.Mask,B.Mask,F.Silkscreen,B.Silkscreen,Edge.Cuts \
   -o fab/gerbers/ baby-remote.kicad_pcb
 "$CLI" pcb export drill --format excellon --excellon-units mm -o fab/gerbers/ baby-remote.kicad_pcb
-( cd fab && zip -r baby-remote-jlcpcb.zip gerbers )
+# zip FLAT — files at the archive root (JLCPCB does not read nested folders)
+( cd fab/gerbers && zip ../baby-remote-jlcpcb.zip *.gbr *.gbrjob *.drl )
 ```
 
 ## JLCPCB order settings
