@@ -1,0 +1,16 @@
+# ESPHome real secrets (use *.example as templates)
+secrets.yaml
+**/secrets.yaml
+.venv/
+__pycache__/
+.DS_Store
+**/.DS_Store
+.history/
+*.kicad_prl
+*-backups/
+fp-info-cache
+*.bak
+*.rpt
+*.lck
+~*
+*.jar

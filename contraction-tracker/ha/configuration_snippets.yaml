@@ -1,0 +1,58 @@
+# Contraction Tracker — HA configuration.yaml snippets
+# Add these to your configuration.yaml
+
+rest_command:
+  log_contraction:
+    url: "http://homelab.local:5678/webhook/contraction-panic"
+    method: POST
+    content_type: "application/json"
+    payload: '{"intensity": "{{ intensity }}"}'
+
+  refresh_ai_assessment:
+    url: "http://homelab.local:5678/webhook/contraction-ai"
+    method: POST
+
+  log_contraction_note:
+    url: "http://homelab.local:5678/webhook/contraction-note"
+    method: POST
+    content_type: "application/json"
+    payload: '{"note": "{{ note }}"}'
+
+input_text:
+  add_note:
+    name: "Add Note"
+    icon: mdi:note-text
+    max: 255
+
+  contraction_log:
+    name: "Contraction Log"
+    icon: mdi:format-list-bulleted
+    max: 255
+
+  ai_assessment:
+    name: "AI Assessment"
+    icon: mdi:brain
+    max: 255
+    initial: "Press refresh for AI assessment"
+
+  ai_assessment_time:
+    name: "AI Assessment Time"
+    icon: mdi:clock
+    max: 50
+    initial: "Never"
+
+counter:
+  contractions:
+    name: "Contractions"
+    icon: mdi:counter
+
+rest:
+  - scan_interval: 30
+    resource: "http://homelab.local:5678/webhook/contraction-log"
+    sensor:
+      - name: "Contraction Log"
+        unique_id: contraction_log_db
+        value_template: "{{ value_json.count }}"
+        json_attributes:
+          - entries
+          - stats

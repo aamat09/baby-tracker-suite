@@ -1,0 +1,7 @@
+Item,Qty,Reference,Value,Footprint / Package,Notes
+1,1,U1,ESP32-C3 SuperMini,castellated module,any C3 SuperMini dev board
+2,15,SW1-SW15,6x6x5 tactile push button,SW_PUSH_6mm THT 4-pin,one per matrix key
+3,1,LED1,WS2812B,PLCC4 5050,status/feedback LED on GPIO8
+4,1,-,TP4056 USB-C charger,26x17mm board,LiPo charge + protection (off-board)
+5,1,-,3.7V LiPo 500-800mAh,~48x30x5mm,fits enclosure bay (off-board)
+6,-,-,hookup wire / solder,-,shared GND bus + matrix rows/cols

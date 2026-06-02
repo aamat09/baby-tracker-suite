@@ -1,0 +1,303 @@
+{
+  "version": 1,
+  "minor_version": 1,
+  "key": "lovelace.contractions",
+  "data": {
+    "config": {
+      "title": "Contractions",
+      "views": [
+        {
+          "title": "Tracker",
+          "path": "tracker",
+          "icon": "mdi:baby",
+          "badges": [],
+          "cards": [
+            {
+              "type": "markdown",
+              "title": "Last 2 Hours",
+              "content": "{% set s = state_attr('sensor.contraction_log_2', 'stats') %}\n{% if s and s.count_2h and s.count_2h >= 2 %}\n**{{ s.count_2h }}** contractions | **{{ s.avg_gap_min }} min** avg gap | {% if s.intensity_label %}**{{ s.intensity_label | capitalize }}** avg{% else %}No intensity rated{% endif %} | {{ s.total }} total\n{% elif s and s.count_2h == 1 %}\n**1** contraction in 2h — need more for stats. {{ s.total }} total.\n{% else %}\nNo contractions in the last 2 hours.{% if s %} {{ s.total }} total.{% endif %}\n{% endif %}"
+            },
+            {
+              "type": "horizontal-stack",
+              "cards": [
+                {
+                  "type": "custom:button-card",
+                  "name": "Mild",
+                  "icon": "mdi:circle-outline",
+                  "color": "white",
+                  "styles": {
+                    "card": [
+                      { "background": "#2d6a4f" },
+                      { "height": "90px" },
+                      { "border-radius": "12px" },
+                      { "transition": "transform 0.15s ease, opacity 0.15s ease" }
+                    ],
+                    "name": [
+                      { "color": "white" },
+                      { "font-size": "14px" },
+                      { "font-weight": "bold" }
+                    ],
+                    "icon": [
+                      { "color": "white" },
+                      { "width": "36px" }
+                    ]
+                  },
+                  "state": [
+                    {
+                      "value": "on",
+                      "styles": {
+                        "card": [
+                          { "transform": "scale(0.9)" },
+                          { "opacity": "0.7" }
+                        ]
+                      }
+                    }
+                  ],
+                  "tap_action": {
+                    "action": "call-service",
+                    "service": "script.contraction_mild",
+                    "haptic": "heavy"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "name": "Moderate",
+                  "icon": "mdi:circle-half-full",
+                  "color": "#1a1a1a",
+                  "styles": {
+                    "card": [
+                      { "background": "#e9c46a" },
+                      { "height": "90px" },
+                      { "border-radius": "12px" },
+                      { "transition": "transform 0.15s ease, opacity 0.15s ease" }
+                    ],
+                    "name": [
+                      { "color": "#1a1a1a" },
+                      { "font-size": "14px" },
+                      { "font-weight": "bold" }
+                    ],
+                    "icon": [
+                      { "color": "#1a1a1a" },
+                      { "width": "36px" }
+                    ]
+                  },
+                  "state": [
+                    {
+                      "value": "on",
+                      "styles": {
+                        "card": [
+                          { "transform": "scale(0.9)" },
+                          { "opacity": "0.7" }
+                        ]
+                      }
+                    }
+                  ],
+                  "tap_action": {
+                    "action": "call-service",
+                    "service": "script.contraction_moderate",
+                    "haptic": "heavy"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "name": "Strong",
+                  "icon": "mdi:circle-slice-6",
+                  "color": "white",
+                  "styles": {
+                    "card": [
+                      { "background": "#e76f51" },
+                      { "height": "90px" },
+                      { "border-radius": "12px" },
+                      { "transition": "transform 0.15s ease, opacity 0.15s ease" }
+                    ],
+                    "name": [
+                      { "color": "white" },
+                      { "font-size": "14px" },
+                      { "font-weight": "bold" }
+                    ],
+                    "icon": [
+                      { "color": "white" },
+                      { "width": "36px" }
+                    ]
+                  },
+                  "state": [
+                    {
+                      "value": "on",
+                      "styles": {
+                        "card": [
+                          { "transform": "scale(0.9)" },
+                          { "opacity": "0.7" }
+                        ]
+                      }
+                    }
+                  ],
+                  "tap_action": {
+                    "action": "call-service",
+                    "service": "script.contraction_strong",
+                    "haptic": "heavy"
+                  }
+                },
+                {
+                  "type": "custom:button-card",
+                  "name": "Intense",
+                  "icon": "mdi:circle-slice-8",
+                  "color": "white",
+                  "styles": {
+                    "card": [
+                      { "background": "#d62828" },
+                      { "height": "90px" },
+                      { "border-radius": "12px" },
+                      { "transition": "transform 0.15s ease, opacity 0.15s ease" }
+                    ],
+                    "name": [
+                      { "color": "white" },
+                      { "font-size": "14px" },
+                      { "font-weight": "bold" }
+                    ],
+                    "icon": [
+                      { "color": "white" },
+                      { "width": "36px" }
+                    ]
+                  },
+                  "state": [
+                    {
+                      "value": "on",
+                      "styles": {
+                        "card": [
+                          { "transform": "scale(0.9)" },
+                          { "opacity": "0.7" }
+                        ]
+                      }
+                    }
+                  ],
+                  "tap_action": {
+                    "action": "call-service",
+                    "service": "script.contraction_intense",
+                    "haptic": "heavy"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "entities",
+              "title": "Add a Note",
+              "show_header_toggle": false,
+              "entities": [
+                {
+                  "entity": "input_text.add_note",
+                  "name": "Note"
+                },
+                {
+                  "type": "button",
+                  "name": " ",
+                  "action_name": "Save",
+                  "tap_action": {
+                    "action": "call-service",
+                    "service": "script.add_contraction_note"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "markdown",
+              "title": "Contraction Journal",
+              "content": "{% set entries = state_attr('sensor.contraction_log_2', 'entries') %}\n{% if entries %}\n{% for e in entries %}\n{% if e.type == 'note' %}\n📝 **Note** — {{ e.note }} *({{ e.time }})*\n{% elif e.intensity == 'mild' %}\n🟢 **Mild** — {{ e.time }}\n{% elif e.intensity == 'moderate' %}\n🟡 **Moderate** — {{ e.time }}\n{% elif e.intensity == 'strong' %}\n🟠 **Strong** — {{ e.time }}\n{% elif e.intensity == 'intense' %}\n🔴 **Intense** — {{ e.time }}\n{% else %}\n🤱 **Contraction** — {{ e.time }}\n{% endif %}\n{% endfor %}\n{% else %}\n*No entries yet.*\n{% endif %}"
+            },
+            {
+              "type": "markdown",
+              "title": "AI Assessment",
+              "content": "{{ states('input_text.ai_assessment') }}\n\n*Updated: {{ states('input_text.ai_assessment_time') }}*"
+            },
+            {
+              "type": "custom:button-card",
+              "name": "Refresh AI",
+              "icon": "mdi:brain",
+              "color": "#a78bfa",
+              "layout": "icon_name",
+              "styles": {
+                "card": [
+                  { "background": "rgba(167, 139, 250, 0.1)" },
+                  { "height": "36px" },
+                  { "border-radius": "8px" }
+                ],
+                "name": [
+                  { "color": "#a78bfa" },
+                  { "font-size": "12px" }
+                ],
+                "icon": [
+                  { "color": "#a78bfa" },
+                  { "width": "18px" }
+                ]
+              },
+              "tap_action": {
+                "action": "call-service",
+                "service": "script.refresh_ai_assessment",
+                "haptic": "light"
+              }
+            },
+            {
+              "type": "horizontal-stack",
+              "cards": [
+                {
+                  "type": "markdown",
+                  "content": "**Add to Home Screen:** Shortcuts app > **+** > Open URL > paste > rename > Share > **Add to Home Screen**"
+                },
+                {
+                  "type": "custom:button-card",
+                  "name": "Copy URL",
+                  "icon": "mdi:content-copy",
+                  "color": "#667EEA",
+                  "show_entity_picture": false,
+                  "styles": {
+                    "card": [
+                      { "background": "rgba(102, 126, 234, 0.15)" },
+                      { "height": "100%" },
+                      { "border-radius": "10px" },
+                      { "border": "1px solid rgba(102, 126, 234, 0.3)" },
+                      { "min-width": "100px" }
+                    ],
+                    "name": [
+                      { "color": "#667EEA" },
+                      { "font-size": "12px" },
+                      { "font-weight": "600" }
+                    ],
+                    "icon": [
+                      { "color": "#667EEA" },
+                      { "width": "20px" }
+                    ]
+                  },
+                  "tap_action": {
+                    "action": "call-service",
+                    "service": "notify.mobile_app_partner_phone",
+                    "service_data": {
+                      "title": "Contraction Shortcut URL",
+                      "message": "homeassistant://navigate/contractions",
+                      "data": {
+                        "actions": [
+                          {
+                            "action": "URI",
+                            "title": "Copy",
+                            "uri": "homeassistant://navigate/contractions"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "type": "button",
+              "name": "Reset All",
+              "icon": "mdi:restart",
+              "tap_action": {
+                "action": "call-service",
+                "service": "script.reset_contractions"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

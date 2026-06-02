@@ -1,0 +1,619 @@
+{
+  "version": 1,
+  "minor_version": 1,
+  "key": "lovelace.baby_tracker",
+  "data": {
+    "config": {
+      "title": "Baby",
+      "views": [
+        {
+          "title": "Tracker",
+          "path": "tracker",
+          "icon": "mdi:baby-face-outline",
+          "badges": [],
+          "cards": [
+            {
+              "type": "markdown",
+              "title": "Baby's Summary",
+              "content": "{% set s = state_attr('sensor.baby_log', 'stats') %}\n{% if s and (s.feeds_today > 0 or s.diapers_today > 0 or s.sleep_min_today > 0 or s.baths_today > 0) %}\n{% if s.last_feed_min is not none %}🍼 Last feed: **{{ s.last_feed_min }}min ago** ({{ s.last_feed_type }}) | Today: **{{ s.feeds_today }}**\n{% else %}🍼 No feeds yet today\n{% endif %}\n{% if s.last_diaper_min is not none %}🧷 Last diaper: **{{ s.last_diaper_min }}min ago** ({{ s.last_diaper_type }}) | Today: **{{ s.diapers_today }}**\n{% else %}🧷 No diapers yet today\n{% endif %}\n😴 Sleep today: **{{ s.sleep_total_today }}** | {% if s.is_sleeping %}💤 Currently sleeping{% else %}👀 Awake{% endif %}\n🫙 Pumps: {{ s.pumps_today | default(0) }} | 🛁 Baths: {{ s.baths_today }} | 💊 Medicine: {{ s.medicines_today }} | 🤸 Tummy time: {{ s.tummy_times_today }}\n{% else %}\n*Nothing recorded yet.*\n{% endif %}"
+            },
+            {
+              "type": "horizontal-stack",
+              "cards": [
+                {
+                  "type": "custom:button-card",
+                  "name": "Breast",
+                  "icon": "mdi:baby-bottle-outline",
+                  "tap_action": {
+                    "action": "call-service",
+                    "service": "script.baby_feed_breast",
+                    "haptic": "heavy"
+                  },
+                  "styles": {
+                    "card": [
+                      { "background-color": "#e8a0bf" },
+                      { "color": "#1a1a1a" },
+                      { "height": "80px" },
+                      { "border-radius": "12px" },
+                      { "transition": "transform 0.15s ease, opacity 0.15s ease" }
+                    ],
+                    "icon": [
+                      { "color": "#1a1a1a" },
+                      { "width": "32px" }
+                    ],
+                    "name": [
+                      { "color": "#1a1a1a" },
+                      { "font-size": "13px" },
+                      { "font-weight": "bold" }
+                    ]
+                  },
+                  "state": [
+                    {
+                      "value": "on",
+                      "styles": {
+                        "card": [
+                          { "transform": "scale(0.9)" },
+                          { "opacity": "0.7" }
+                        ]
+                      }
+                    }
+                  ],
+                  "show_state": false
+                },
+                {
+                  "type": "custom:button-card",
+                  "name": "Bottle",
+                  "icon": "mdi:baby-bottle",
+                  "tap_action": {
+                    "action": "call-service",
+                    "service": "script.baby_feed_bottle",
+                    "haptic": "heavy"
+                  },
+                  "styles": {
+                    "card": [
+                      { "background-color": "#a0c4e8" },
+                      { "color": "#1a1a1a" },
+                      { "height": "80px" },
+                      { "border-radius": "12px" },
+                      { "transition": "transform 0.15s ease, opacity 0.15s ease" }
+                    ],
+                    "icon": [
+                      { "color": "#1a1a1a" },
+                      { "width": "32px" }
+                    ],
+                    "name": [
+                      { "color": "#1a1a1a" },
+                      { "font-size": "13px" },
+                      { "font-weight": "bold" }
+                    ]
+                  },
+                  "state": [
+                    {
+                      "value": "on",
+                      "styles": {
+                        "card": [
+                          { "transform": "scale(0.9)" },
+                          { "opacity": "0.7" }
+                        ]
+                      }
+                    }
+                  ],
+                  "show_state": false
+                },
+                {
+                  "type": "custom:button-card",
+                  "name": "Solid",
+                  "icon": "mdi:food-apple",
+                  "tap_action": {
+                    "action": "call-service",
+                    "service": "script.baby_feed_solid",
+                    "haptic": "heavy"
+                  },
+                  "styles": {
+                    "card": [
+                      { "background-color": "#c4e8a0" },
+                      { "color": "#1a1a1a" },
+                      { "height": "80px" },
+                      { "border-radius": "12px" },
+                      { "transition": "transform 0.15s ease, opacity 0.15s ease" }
+                    ],
+                    "icon": [
+                      { "color": "#1a1a1a" },
+                      { "width": "32px" }
+                    ],
+                    "name": [
+                      { "color": "#1a1a1a" },
+                      { "font-size": "13px" },
+                      { "font-weight": "bold" }
+                    ]
+                  },
+                  "state": [
+                    {
+                      "value": "on",
+                      "styles": {
+                        "card": [
+                          { "transform": "scale(0.9)" },
+                          { "opacity": "0.7" }
+                        ]
+                      }
+                    }
+                  ],
+                  "show_state": false
+                }
+              ]
+            },
+            {
+              "type": "horizontal-stack",
+              "cards": [
+                {
+                  "type": "custom:button-card",
+                  "name": "Pump L",
+                  "icon": "mdi:water-pump",
+                  "tap_action": {
+                    "action": "call-service",
+                    "service": "script.baby_pump_left",
+                    "haptic": "heavy"
+                  },
+                  "styles": {
+                    "card": [
+                      { "background-color": "#d4a0e8" },
+                      { "color": "#1a1a1a" },
+                      { "height": "80px" },
+                      { "border-radius": "12px" },
+                      { "transition": "transform 0.15s ease, opacity 0.15s ease" }
+                    ],
+                    "icon": [
+                      { "color": "#1a1a1a" },
+                      { "width": "32px" }
+                    ],
+                    "name": [
+                      { "color": "#1a1a1a" },
+                      { "font-size": "13px" },
+                      { "font-weight": "bold" }
+                    ]
+                  },
+                  "state": [
+                    {
+                      "value": "on",
+                      "styles": {
+                        "card": [
+                          { "transform": "scale(0.9)" },
+                          { "opacity": "0.7" }
+                        ]
+                      }
+                    }
+                  ],
+                  "show_state": false
+                },
+                {
+                  "type": "custom:button-card",
+                  "name": "Pump R",
+                  "icon": "mdi:water-pump",
+                  "tap_action": {
+                    "action": "call-service",
+                    "service": "script.baby_pump_right",
+                    "haptic": "heavy"
+                  },
+                  "styles": {
+                    "card": [
+                      { "background-color": "#d4a0e8" },
+                      { "color": "#1a1a1a" },
+                      { "height": "80px" },
+                      { "border-radius": "12px" },
+                      { "transition": "transform 0.15s ease, opacity 0.15s ease" }
+                    ],
+                    "icon": [
+                      { "color": "#1a1a1a" },
+                      { "width": "32px" }
+                    ],
+                    "name": [
+                      { "color": "#1a1a1a" },
+                      { "font-size": "13px" },
+                      { "font-weight": "bold" }
+                    ]
+                  },
+                  "state": [
+                    {
+                      "value": "on",
+                      "styles": {
+                        "card": [
+                          { "transform": "scale(0.9)" },
+                          { "opacity": "0.7" }
+                        ]
+                      }
+                    }
+                  ],
+                  "show_state": false
+                }
+              ]
+            },
+            {
+              "type": "horizontal-stack",
+              "cards": [
+                {
+                  "type": "custom:button-card",
+                  "name": "Pee",
+                  "icon": "mdi:water",
+                  "tap_action": {
+                    "action": "call-service",
+                    "service": "script.baby_diaper_pee",
+                    "haptic": "heavy"
+                  },
+                  "styles": {
+                    "card": [
+                      { "background-color": "#f0e68c" },
+                      { "color": "#1a1a1a" },
+                      { "height": "80px" },
+                      { "border-radius": "12px" },
+                      { "transition": "transform 0.15s ease, opacity 0.15s ease" }
+                    ],
+                    "icon": [
+                      { "color": "#1a1a1a" },
+                      { "width": "32px" }
+                    ],
+                    "name": [
+                      { "color": "#1a1a1a" },
+                      { "font-size": "13px" },
+                      { "font-weight": "bold" }
+                    ]
+                  },
+                  "state": [
+                    {
+                      "value": "on",
+                      "styles": {
+                        "card": [
+                          { "transform": "scale(0.9)" },
+                          { "opacity": "0.7" }
+                        ]
+                      }
+                    }
+                  ],
+                  "show_state": false
+                },
+                {
+                  "type": "custom:button-card",
+                  "name": "Poop",
+                  "icon": "mdi:emoticon-poop",
+                  "tap_action": {
+                    "action": "call-service",
+                    "service": "script.baby_diaper_poop",
+                    "haptic": "heavy"
+                  },
+                  "styles": {
+                    "card": [
+                      { "background-color": "#d2a679" },
+                      { "color": "#1a1a1a" },
+                      { "height": "80px" },
+                      { "border-radius": "12px" },
+                      { "transition": "transform 0.15s ease, opacity 0.15s ease" }
+                    ],
+                    "icon": [
+                      { "color": "#1a1a1a" },
+                      { "width": "32px" }
+                    ],
+                    "name": [
+                      { "color": "#1a1a1a" },
+                      { "font-size": "13px" },
+                      { "font-weight": "bold" }
+                    ]
+                  },
+                  "state": [
+                    {
+                      "value": "on",
+                      "styles": {
+                        "card": [
+                          { "transform": "scale(0.9)" },
+                          { "opacity": "0.7" }
+                        ]
+                      }
+                    }
+                  ],
+                  "show_state": false
+                },
+                {
+                  "type": "custom:button-card",
+                  "name": "Both",
+                  "icon": "mdi:checkbox-multiple-marked",
+                  "tap_action": {
+                    "action": "call-service",
+                    "service": "script.baby_diaper_both",
+                    "haptic": "heavy"
+                  },
+                  "styles": {
+                    "card": [
+                      { "background-color": "#e8c8a0" },
+                      { "color": "#1a1a1a" },
+                      { "height": "80px" },
+                      { "border-radius": "12px" },
+                      { "transition": "transform 0.15s ease, opacity 0.15s ease" }
+                    ],
+                    "icon": [
+                      { "color": "#1a1a1a" },
+                      { "width": "32px" }
+                    ],
+                    "name": [
+                      { "color": "#1a1a1a" },
+                      { "font-size": "13px" },
+                      { "font-weight": "bold" }
+                    ]
+                  },
+                  "state": [
+                    {
+                      "value": "on",
+                      "styles": {
+                        "card": [
+                          { "transform": "scale(0.9)" },
+                          { "opacity": "0.7" }
+                        ]
+                      }
+                    }
+                  ],
+                  "show_state": false
+                },
+                {
+                  "type": "custom:button-card",
+                  "name": "Change",
+                  "icon": "mdi:baby-carriage",
+                  "tap_action": {
+                    "action": "call-service",
+                    "service": "script.baby_diaper_change",
+                    "haptic": "heavy"
+                  },
+                  "styles": {
+                    "card": [
+                      { "background-color": "#c8b89a" },
+                      { "color": "#1a1a1a" },
+                      { "height": "80px" },
+                      { "border-radius": "12px" },
+                      { "transition": "transform 0.15s ease, opacity 0.15s ease" }
+                    ],
+                    "icon": [
+                      { "color": "#1a1a1a" },
+                      { "width": "32px" }
+                    ],
+                    "name": [
+                      { "color": "#1a1a1a" },
+                      { "font-size": "13px" },
+                      { "font-weight": "bold" }
+                    ]
+                  },
+                  "state": [
+                    {
+                      "value": "on",
+                      "styles": {
+                        "card": [
+                          { "transform": "scale(0.9)" },
+                          { "opacity": "0.7" }
+                        ]
+                      }
+                    }
+                  ],
+                  "show_state": false
+                }
+              ]
+            },
+            {
+              "type": "horizontal-stack",
+              "cards": [
+                {
+                  "type": "custom:button-card",
+                  "name": "Sleep",
+                  "icon": "mdi:sleep",
+                  "tap_action": {
+                    "action": "call-service",
+                    "service": "script.baby_sleep_toggle",
+                    "haptic": "heavy"
+                  },
+                  "styles": {
+                    "card": [
+                      { "background-color": "#b0a0e8" },
+                      { "color": "#ffffff" },
+                      { "height": "80px" },
+                      { "border-radius": "12px" },
+                      { "transition": "transform 0.15s ease, opacity 0.15s ease" }
+                    ],
+                    "icon": [
+                      { "color": "#ffffff" },
+                      { "width": "32px" }
+                    ],
+                    "name": [
+                      { "color": "#ffffff" },
+                      { "font-size": "13px" },
+                      { "font-weight": "bold" }
+                    ]
+                  },
+                  "state": [
+                    {
+                      "value": "on",
+                      "styles": {
+                        "card": [
+                          { "transform": "scale(0.9)" },
+                          { "opacity": "0.7" }
+                        ]
+                      }
+                    }
+                  ],
+                  "show_state": false
+                },
+                {
+                  "type": "custom:button-card",
+                  "name": "Bath",
+                  "icon": "mdi:bathtub",
+                  "tap_action": {
+                    "action": "call-service",
+                    "service": "script.baby_bath",
+                    "haptic": "heavy"
+                  },
+                  "styles": {
+                    "card": [
+                      { "background-color": "#a0d8e8" },
+                      { "color": "#1a1a1a" },
+                      { "height": "80px" },
+                      { "border-radius": "12px" },
+                      { "transition": "transform 0.15s ease, opacity 0.15s ease" }
+                    ],
+                    "icon": [
+                      { "color": "#1a1a1a" },
+                      { "width": "32px" }
+                    ],
+                    "name": [
+                      { "color": "#1a1a1a" },
+                      { "font-size": "13px" },
+                      { "font-weight": "bold" }
+                    ]
+                  },
+                  "state": [
+                    {
+                      "value": "on",
+                      "styles": {
+                        "card": [
+                          { "transform": "scale(0.9)" },
+                          { "opacity": "0.7" }
+                        ]
+                      }
+                    }
+                  ],
+                  "show_state": false
+                },
+                {
+                  "type": "custom:button-card",
+                  "name": "Medicine",
+                  "icon": "mdi:pill",
+                  "tap_action": {
+                    "action": "call-service",
+                    "service": "script.baby_medicine",
+                    "haptic": "heavy"
+                  },
+                  "styles": {
+                    "card": [
+                      { "background-color": "#e8a0a0" },
+                      { "color": "#1a1a1a" },
+                      { "height": "80px" },
+                      { "border-radius": "12px" },
+                      { "transition": "transform 0.15s ease, opacity 0.15s ease" }
+                    ],
+                    "icon": [
+                      { "color": "#1a1a1a" },
+                      { "width": "32px" }
+                    ],
+                    "name": [
+                      { "color": "#1a1a1a" },
+                      { "font-size": "13px" },
+                      { "font-weight": "bold" }
+                    ]
+                  },
+                  "state": [
+                    {
+                      "value": "on",
+                      "styles": {
+                        "card": [
+                          { "transform": "scale(0.9)" },
+                          { "opacity": "0.7" }
+                        ]
+                      }
+                    }
+                  ],
+                  "show_state": false
+                },
+                {
+                  "type": "custom:button-card",
+                  "name": "Tummy",
+                  "icon": "mdi:human-baby-changing-table",
+                  "tap_action": {
+                    "action": "call-service",
+                    "service": "script.baby_tummy_time",
+                    "haptic": "heavy"
+                  },
+                  "styles": {
+                    "card": [
+                      { "background-color": "#a0e8c4" },
+                      { "color": "#1a1a1a" },
+                      { "height": "80px" },
+                      { "border-radius": "12px" },
+                      { "transition": "transform 0.15s ease, opacity 0.15s ease" }
+                    ],
+                    "icon": [
+                      { "color": "#1a1a1a" },
+                      { "width": "32px" }
+                    ],
+                    "name": [
+                      { "color": "#1a1a1a" },
+                      { "font-size": "13px" },
+                      { "font-weight": "bold" }
+                    ]
+                  },
+                  "state": [
+                    {
+                      "value": "on",
+                      "styles": {
+                        "card": [
+                          { "transform": "scale(0.9)" },
+                          { "opacity": "0.7" }
+                        ]
+                      }
+                    }
+                  ],
+                  "show_state": false
+                }
+              ]
+            },
+            {
+              "type": "entities",
+              "title": "Add a Note",
+              "show_header_toggle": false,
+              "entities": [
+                {
+                  "entity": "input_text.baby_note",
+                  "name": "Note"
+                },
+                {
+                  "type": "button",
+                  "name": " ",
+                  "action_name": "Save",
+                  "tap_action": {
+                    "action": "call-service",
+                    "service": "script.add_baby_note"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "entities",
+              "title": "Special Note",
+              "show_header_toggle": false,
+              "entities": [
+                {
+                  "entity": "input_text.baby_special_note",
+                  "name": "Note"
+                },
+                {
+                  "type": "button",
+                  "name": " ",
+                  "action_name": "Save",
+                  "tap_action": {
+                    "action": "call-service",
+                    "service": "script.add_baby_special_note"
+                  }
+                }
+              ]
+            },
+            {
+              "type": "markdown",
+              "title": "Baby's Journal",
+              "content": "{% set entries = state_attr('sensor.baby_log', 'entries') %}\n{% if entries %}\n{% for e in entries %}\n{% if e.event_type is defined %}\n{% if e.event_type == 'feed' and e.event_subtype == 'breast' %}🤱 **Breast** — {{ e.time }}\n{% elif e.event_type == 'feed' and e.event_subtype == 'bottle' %}🍼 **Bottle** — {{ e.time }}\n{% elif e.event_type == 'feed' and e.event_subtype == 'solid' %}🥄 **Solid** — {{ e.time }}\n{% elif e.event_type == 'pump' and e.event_subtype == 'left' %}🫙 **Pump L** — {{ e.time }}\n{% elif e.event_type == 'pump' and e.event_subtype == 'right' %}🫙 **Pump R** — {{ e.time }}\n{% elif e.event_type == 'diaper' and e.event_subtype == 'change' %}🔄 **Diaper change** — {{ e.time }}\n{% elif e.event_type == 'diaper' and e.event_subtype == 'pee' %}💛 **Pee** — {{ e.time }}\n{% elif e.event_type == 'diaper' and e.event_subtype == 'poop' %}💩 **Poop** — {{ e.time }}\n{% elif e.event_type == 'diaper' and e.event_subtype == 'both' %}🧷 **Pee+Poop** — {{ e.time }}\n{% elif e.event_type == 'sleep' and e.event_subtype == 'start' %}😴 **Sleep start** — {{ e.time }}\n{% elif e.event_type == 'sleep' and e.event_subtype == 'end' %}⏰ **Sleep end** — {{ e.time }}\n{% elif e.event_type == 'bath' %}🛁 **Bath** — {{ e.time }}\n{% elif e.event_type == 'medicine' %}💊 **Medicine** — {{ e.time }}\n{% elif e.event_type == 'tummy_time' %}🤸 **Tummy time** — {{ e.time }}\n{% elif e.event_type == 'weight' %}⚖️ **Weight** — {{ e.time }}\n{% elif e.event_type == 'note' %}📝 **Note** — {{ e.note }} *({{ e.time }})*\n{% else %}👶 **{{ e.event_type }}** — {{ e.time }}\n{% endif %}\n{% endif %}\n{% endfor %}\n{% else %}\n*No entries yet.*\n{% endif %}"
+            },
+            {
+              "type": "button",
+              "name": "Reset All",
+              "icon": "mdi:restart",
+              "tap_action": {
+                "action": "call-service",
+                "service": "script.reset_baby_tracker"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

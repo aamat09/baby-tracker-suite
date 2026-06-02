@@ -1,0 +1,245 @@
+(pcb "baby-remote.dsn"
+  (parser
+    (string_quote ")
+    (space_in_quoted_tokens on)
+    (host_cad "KiCad's Pcbnew")
+    (host_version "10.0.2")
+  )
+  (resolution um 10)
+  (unit um)
+  (structure
+    (layer F.Cu
+      (type signal)
+      (property
+        (index 0)
+      )
+    )
+    (layer B.Cu
+      (type signal)
+      (property
+        (index 1)
+      )
+    )
+    (boundary
+      (path pcb 0  82000 -104000  2000 -104000  2000 -2000  82000 -2000
+            82000 -104000)
+    )
+    (plane /GND (polygon B.Cu 0  2500 -2500  81500 -2500  81500 -103500  2500 -103500  2500 -2500))
+    (via "Via[0-1]_600:400_um")
+    (rule
+      (width 250)
+      (clearance 200)
+      (clearance 50 (type smd_smd))
+    )
+  )
+  (placement
+    (component Button_Switch_THT:SW_PUSH_6mm_H13mm
+      (place SW12 67500 -72500 front 0 (PN Change))
+      (place SW10 33500 -72500 front 0 (PN Poop))
+      (place SW2 33500 -38500 front 0 (PN Bottle))
+      (place SW6 33500 -55500 front 0 (PN PumpR))
+      (place SW15 50500 -89500 front 0 (PN Note))
+      (place SW14 33500 -89500 front 0 (PN Weight))
+      (place SW11 50500 -72500 front 0 (PN Both))
+      (place SW4 67500 -38500 front 0 (PN Sleep))
+      (place SW1 16500 -38500 front 0 (PN Breast))
+      (place SW8 67500 -55500 front 0 (PN Meds))
+      (place SW5 16500 -55500 front 0 (PN PumpL))
+      (place SW13 16500 -89500 front 0 (PN Tummy))
+      (place SW9 16500 -72500 front 0 (PN Pee))
+      (place SW7 50500 -55500 front 0 (PN Bath))
+      (place SW3 50500 -38500 front 0 (PN Solid))
+    )
+    (component LED_SMD:LED_WS2812B_PLCC4_5.0x5.0mm_P3.2mm
+      (place LED1 67500 -89500 front 0 (PN WS2812B))
+    )
+    (component "ESP32-C3-SuperMini:MODULE_ESP32-C3_SUPERMINI"
+      (place U1 66000 -14000 front 0 (PN "ESP32-C3 SuperMini"))
+    )
+  )
+  (library
+    (image Button_Switch_THT:SW_PUSH_6mm_H13mm
+      (outline (polygon signal 0  7995 -5995  -1495 -5995  -1495 1495  7995 1495))
+      (outline (path signal 120  -250 -1500  -250 -3000))
+      (outline (path signal 120  1000 -5500  5500 -5500))
+      (outline (path signal 120  5500 1000  1000 1000))
+      (outline (path signal 120  6750 -3000  6750 -1500))
+      (outline (path signal 100  250 750  3250 750))
+      (outline (path signal 100  250 -5250  250 750))
+      (outline (path signal 100  3250 750  6250 750))
+      (outline (path signal 100  6250 750  6250 -5250))
+      (outline (path signal 100  6250 -5250  250 -5250))
+      (outline (path signal 100  5265.56 -2250  5246.79 -2524.45  5190.82 -2793.79  5098.7 -3053
+            4972.14 -3297.26  4813.5 -3522  4625.73 -3723.05  4412.34 -3896.66
+            4177.29 -4039.59  3924.97 -4149.19  3660.08 -4223.41  3387.55 -4260.86
+            3112.45 -4260.86  2839.92 -4223.41  2575.03 -4149.19  2322.71 -4039.59
+            2087.66 -3896.66  1874.27 -3723.05  1686.5 -3522  1527.86 -3297.26
+            1401.3 -3053  1309.18 -2793.79  1253.21 -2524.45  1234.44 -2250
+            1253.21 -1975.55  1309.18 -1706.21  1401.3 -1447  1527.86 -1202.74
+            1686.5 -978.002  1874.27 -776.953  2087.66 -603.345  2322.71 -460.411
+            2575.03 -350.813  2839.92 -276.593  3112.45 -239.135  3387.55 -239.135
+            3660.08 -276.593  3924.97 -350.813  4177.29 -460.411  4412.34 -603.345
+            4625.73 -776.953  4813.5 -978.002  4972.14 -1202.74  5098.7 -1447
+            5190.82 -1706.21  5246.79 -1975.55  5265.56 -2250))
+      (pin Round[A]Pad_2000.000000_um (rotate 90) 1 0 0)
+      (pin Round[A]Pad_2000.000000_um (rotate 90) 1@1 6500 0)
+      (pin Round[A]Pad_2000.000000_um (rotate 90) 2 0 -4500)
+      (pin Round[A]Pad_2000.000000_um (rotate 90) 2@1 6500 -4500)
+    )
+    (image LED_SMD:LED_WS2812B_PLCC4_5.0x5.0mm_P3.2mm
+      (outline (polygon signal 0  3445 -2745  -3445 -2745  -3445 2745  3445 2745))
+      (outline (path signal 120  -3500 2750  -3500 -2750))
+      (outline (path signal 120  -3500 2750  3500 2750))
+      (outline (path signal 120  -3500 -2750  3050 -2750))
+      (outline (path signal 120  -2700 -900  -2700 900))
+      (outline (path signal 120  2700 -900  2700 900))
+      (outline (path signal 120  3050 -2750  3500 -2300))
+      (outline (path signal 120  3500 -2300  3500 2750))
+      (outline (path signal 100  -2500 2500  -2500 -2500))
+      (outline (path signal 100  -2500 -2500  2500 -2500))
+      (outline (path signal 100  2500 2500  -2500 2500))
+      (outline (path signal 100  2500 -1500  1500 -2500))
+      (outline (path signal 100  2500 -2500  2500 2500))
+      (outline (path signal 100  2000 0  1980.54 -278.346  1922.52 -551.275  1827.09 -813.473
+            1696.1 -1059.84  1532.09 -1285.58  1338.26 -1486.29  1118.39 -1658.08
+            876.742 -1797.59  618.034 -1902.11  347.296 -1969.62  69.799 -1998.78
+            -209.057 -1989.04  -483.844 -1940.59  -749.213 -1854.37  -1000 -1732.05
+            -1231.32 -1576.02  -1438.68 -1389.32  -1618.03 -1175.57  -1765.89 -938.943
+            -1879.38 -684.04  -1956.3 -415.823  -1995.13 -139.513  -1995.13 139.513
+            -1956.3 415.823  -1879.38 684.04  -1765.89 938.943  -1618.03 1175.57
+            -1438.68 1389.32  -1231.32 1576.02  -1000 1732.05  -749.213 1854.37
+            -483.844 1940.59  -209.057 1989.04  69.799 1998.78  347.296 1969.62
+            618.034 1902.11  876.742 1797.59  1118.39 1658.08  1338.26 1486.29
+            1532.09 1285.58  1696.1 1059.84  1827.09 813.473  1922.52 551.275
+            1980.54 278.346  2000 0))
+      (pin RoundRect[T]Pad_1500.000000x900.000000_90.342000_um_0.000000_0 1 -2450 1650)
+      (pin RoundRect[T]Pad_1500.000000x900.000000_90.342000_um_0.000000_0 2 -2450 -1650)
+      (pin RoundRect[T]Pad_1500.000000x900.000000_90.342000_um_0.000000_0 3 2450 -1650)
+      (pin RoundRect[T]Pad_1500.000000x900.000000_90.342000_um_0.000000_0 4 2450 1650)
+    )
+    (image "ESP32-C3-SuperMini:MODULE_ESP32-C3_SUPERMINI"
+      (outline (polygon signal 0  9245 -11595  -9245 -11595  -9245 12895  9245 12895))
+      (outline (path signal 127  -9000 -11350  -9000 11350))
+      (outline (path signal 127  -4500 12650  -4500 11350))
+      (outline (path signal 127  -4500 11350  -9000 11350))
+      (outline (path signal 127  4500 12650  -4500 12650))
+      (outline (path signal 127  4500 12650  4500 11350))
+      (outline (path signal 127  9000 11350  4500 11350))
+      (outline (path signal 127  9000 -11350  -9000 -11350))
+      (outline (path signal 127  9000 -11350  9000 11350))
+      (outline (path signal 127  -9000 -11350  -9000 11350))
+      (outline (path signal 127  -4500 12650  -4500 11350))
+      (outline (path signal 127  -4500 11350  -9000 11350))
+      (outline (path signal 127  4500 12650  -4500 12650))
+      (outline (path signal 127  4500 12650  4500 11350))
+      (outline (path signal 127  9000 11350  4500 11350))
+      (outline (path signal 127  9000 -11350  -9000 -11350))
+      (outline (path signal 127  9000 -11350  9000 11350))
+      (pin Rect[T]Pad_6000.000000x1905.000000_um 0 7620 -7880)
+      (pin Rect[T]Pad_6000.000000x1905.000000_um 1 7620 -5340)
+      (pin Rect[T]Pad_6000.000000x1905.000000_um 2 7620 -2800)
+      (pin Rect[T]Pad_6000.000000x1905.000000_um 3 7620 -260)
+      (pin Rect[T]Pad_6000.000000x1905.000000_um 3.3 7620 4820)
+      (pin Rect[T]Pad_6000.000000x1905.000000_um 4 7620 2280)
+      (pin Rect[T]Pad_6000.000000x1905.000000_um 5 -7620 9900)
+      (pin Rect[T]Pad_6000.000000x1905.000000_um 5V 7620 9900)
+      (pin Rect[T]Pad_6000.000000x1905.000000_um 6 -7620 7360)
+      (pin Rect[T]Pad_6000.000000x1905.000000_um 7 -7620 4820)
+      (pin Rect[T]Pad_6000.000000x1905.000000_um 8 -7620 2280)
+      (pin Rect[T]Pad_6000.000000x1905.000000_um 9 -7620 -260)
+      (pin Rect[T]Pad_6000.000000x1905.000000_um 10 -7620 -2800)
+      (pin Rect[T]Pad_6000.000000x1905.000000_um 20 -7620 -5340)
+      (pin Rect[T]Pad_6000.000000x1905.000000_um 21 -7620 -7880)
+      (pin Rect[T]Pad_6000.000000x1905.000000_um G 7620 7360)
+    )
+    (padstack Round[A]Pad_2000.000000_um
+      (shape (circle F.Cu 2000))
+      (shape (circle B.Cu 2000))
+      (attach off)
+    )
+    (padstack RoundRect[T]Pad_1500.000000x900.000000_90.342000_um_0.000000_0
+      (shape (polygon F.Cu 0  -750.342 360  -743.465 394.572  -723.881 423.881  -694.572 443.465
+            -660 450.342  660 450.342  694.572 443.465  723.881 423.881
+            743.465 394.572  750.342 360  750.342 -360  743.465 -394.572
+            723.881 -423.881  694.572 -443.465  660 -450.342  -660 -450.342
+            -694.572 -443.465  -723.881 -423.881  -743.465 -394.572  -750.342 -360
+            -750.342 360))
+      (attach off)
+    )
+    (padstack Rect[T]Pad_6000.000000x1905.000000_um
+      (shape (rect F.Cu -3000 -952.5 3000 952.5))
+      (attach off)
+    )
+    (padstack "Via[0-1]_600:400_um"
+      (shape (circle F.Cu 600))
+      (shape (circle B.Cu 600))
+      (attach off)
+    )
+  )
+  (network
+    (net /ROW2
+      (pins SW12-1 SW12-1@1 SW10-1 SW10-1@1 SW11-1 SW11-1@1 SW9-1 SW9-1@1 U1-3)
+    )
+    (net /COL3
+      (pins SW12-2 SW12-2@1 SW4-2 SW4-2@1 SW8-2 SW8-2@1 U1-10)
+    )
+    (net /COL1
+      (pins SW10-2 SW10-2@1 SW2-2 SW2-2@1 SW6-2 SW6-2@1 SW14-2 SW14-2@1 U1-6)
+    )
+    (net /ROW0
+      (pins SW2-1 SW2-1@1 SW4-1 SW4-1@1 SW1-1 SW1-1@1 U1-0 SW3-1 SW3-1@1)
+    )
+    (net /ROW1
+      (pins SW6-1 SW6-1@1 SW8-1 SW8-1@1 SW5-1 SW5-1@1 U1-1 SW7-1 SW7-1@1)
+    )
+    (net /ROW3
+      (pins SW15-1 SW15-1@1 SW14-1 SW14-1@1 SW13-1 SW13-1@1 U1-4)
+    )
+    (net /COL2
+      (pins SW15-2 SW15-2@1 SW11-2 SW11-2@1 U1-7 SW7-2 SW7-2@1 SW3-2 SW3-2@1)
+    )
+    (net /+5V
+      (pins LED1-1 U1-5V)
+    )
+    (net "unconnected-(LED1-DOUT-Pad2)"
+      (pins LED1-2)
+    )
+    (net /GND
+      (pins LED1-3 U1-G)
+    )
+    (net /LED_DIN
+      (pins LED1-4 U1-8)
+    )
+    (net /COL0
+      (pins SW1-2 SW1-2@1 SW5-2 SW5-2@1 SW13-2 SW13-2@1 SW9-2 SW9-2@1 U1-5)
+    )
+    (net "unconnected-(U1-GPIO2-Pad2)"
+      (pins U1-2)
+    )
+    (net /+3V3
+      (pins U1-3.3)
+    )
+    (net "unconnected-(U1-GPIO9-Pad9)"
+      (pins U1-9)
+    )
+    (net "unconnected-(U1-GPIO20-Pad20)"
+      (pins U1-20)
+    )
+    (net "unconnected-(U1-GPIO21-Pad21)"
+      (pins U1-21)
+    )
+    (class kicad_default /+3V3 /+5V /COL0 /COL1 /COL2 /COL3 /GND /LED_DIN
+      /ROW0 /ROW1 /ROW2 /ROW3 "unconnected-(LED1-DOUT-Pad2)" "unconnected-(U1-GPIO2-Pad2)"
+      "unconnected-(U1-GPIO20-Pad20)" "unconnected-(U1-GPIO21-Pad21)" "unconnected-(U1-GPIO9-Pad9)"
+      (circuit
+        (use_via "Via[0-1]_600:400_um")
+      )
+      (rule
+        (width 250)
+        (clearance 200)
+      )
+    )
+  )
+  (wiring
+  )
+)

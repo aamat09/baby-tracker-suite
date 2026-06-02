@@ -1,0 +1,45 @@
+# Baby Tracker — HA configuration.yaml snippets
+# Add these to your configuration.yaml
+
+rest_command:
+  log_baby_event:
+    url: "http://homelab.local:5678/webhook/baby-event"
+    method: POST
+    content_type: "application/json"
+    payload: '{"event_type": "{{ event_type }}", "event_subtype": "{{ event_subtype }}"}'
+
+  start_pump_reminder:
+    url: "http://homelab.local:5678/webhook/pump-reminder"
+    method: POST
+    content_type: "application/json"
+    payload: >
+      {"side": "{{ side }}", "pump_time": "{{ now().strftime('%-I:%M %p') }}"}
+
+shell_command:
+  truncate_baby_events_db: >
+    PGPASSWORD=<your_password> psql -h homelab.local -U maestro
+    -d maestro_hub -c "TRUNCATE baby_events RESTART IDENTITY"
+
+input_text:
+  baby_note:
+    name: "Baby Note"
+    icon: mdi:pencil
+    max: 255
+    initial: ""
+
+  baby_special_note:
+    name: "Baby Special Note"
+    icon: mdi:star
+    max: 255
+    initial: ""
+
+rest:
+  - scan_interval: 30
+    resource: "http://homelab.local:5678/webhook/baby-log"
+    sensor:
+      - name: "Baby Log"
+        unique_id: baby_log_db
+        value_template: "{{ value_json.count }}"
+        json_attributes:
+          - entries
+          - stats

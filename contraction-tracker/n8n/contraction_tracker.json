@@ -1,0 +1,300 @@
+{
+  "id": "gE5Bfa3JEsaAFx0D",
+  "name": "Contraction Tracker",
+  "description": null,
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "id": "mqtt-trigger",
+      "name": "Panic Button",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "webhookId": "contraction-panic",
+      "parameters": {
+        "path": "contraction-panic",
+        "responseMode": "onReceived",
+        "responseData": "firstEntryJson",
+        "httpMethod": "POST"
+      }
+    },
+    {
+      "id": "code-track",
+      "name": "Track Contraction",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        220,
+        0
+      ],
+      "parameters": {
+        "jsCode": "const now = new Date();\nconst ts = now.toISOString();\nconst local = now.toLocaleString(\"en-US\", {timeZone: \"America/New_York\", hour12: true, month: \"short\", day: \"numeric\", hour: \"2-digit\", minute: \"2-digit\", second: \"2-digit\"});\nconst intensity = $input.first().json.body?.intensity || null;\nif (!global.lastContractionTs) global.lastContractionTs = null;\nif (!global.contractionCount) global.contractionCount = 0;\nglobal.contractionCount++;\nconst count = global.contractionCount;\nlet gapStr = \"first\";\nlet gapSec = null;\nif (global.lastContractionTs) {\n  gapSec = Math.round((now - new Date(global.lastContractionTs)) / 1000);\n  const m = Math.floor(gapSec / 60);\n  const s = gapSec % 60;\n  gapStr = m > 0 ? `${m}m ${s}s ago` : `${s}s ago`;\n}\nglobal.lastContractionTs = ts;\nreturn [{ json: { ts, local, count, gapStr, gapSec, intensity } }];"
+      }
+    },
+    {
+      "id": "discord",
+      "name": "Discord",
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 2,
+      "position": [
+        440,
+        -120
+      ],
+      "credentials": {
+        "discordWebhookApi": {
+          "id": "7oiAfCJ3fJEuoBs8",
+          "name": "Contractions Discord"
+        }
+      },
+      "parameters": {
+        "authentication": "webhook",
+        "content": "=\ud83e\udd31 **Contraction**{{ $json.intensity ? ' (' + $json.intensity + ')' : '' }}\n\ud83d\udd50 {{ $json.local }}",
+        "options": {}
+      }
+    },
+    {
+      "id": "ha-counter",
+      "name": "HA Counter",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        440,
+        20
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "http://homeassistant.local:8123/api/services/counter/increment",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\"entity_id\": \"counter.contractions\"}"
+      },
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "gj7sA9iUy7oQ4CSv",
+          "name": "HA Bearer"
+        }
+      }
+    },
+    {
+      "id": "ha-log",
+      "name": "HA Log Event",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        440,
+        160
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "http://homeassistant.local:8123/api/events/contraction_logged",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ ts: $json.ts, count: $json.count, gap_sec: $json.gapSec, intensity: $json.intensity }) }}"
+      },
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "gj7sA9iUy7oQ4CSv",
+          "name": "HA Bearer"
+        }
+      }
+    },
+    {
+      "id": "notify-you",
+      "name": "Notify You",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        440,
+        300
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "http://homeassistant.local:8123/api/services/notify/mobile_app_your_phone",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ title: \"\ud83e\udd31 Contraction\" + ($json.intensity ? ' (' + $json.intensity + ')' : ''), message: $json.local }) }}"
+      },
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "gj7sA9iUy7oQ4CSv",
+          "name": "HA Bearer"
+        }
+      }
+    },
+    {
+      "id": "notify-partner",
+      "name": "Notify Partner",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        440,
+        440
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "http://homeassistant.local:8123/api/services/notify/mobile_app_partner_phone",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ title: \"\ud83e\udd31 Contraction\" + ($json.intensity ? ' (' + $json.intensity + ')' : ''), message: $json.local }) }}"
+      },
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "gj7sA9iUy7oQ4CSv",
+          "name": "HA Bearer"
+        }
+      }
+    },
+    {
+      "id": "echo-show-announce",
+      "name": "Echo Show Announce",
+      "type": "n8n-nodes-base.mqtt",
+      "typeVersion": 1,
+      "position": [
+        440,
+        580
+      ],
+      "parameters": {
+        "topic": "alexa/echo_show/set/announce",
+        "message": "Contraction registered",
+        "options": {
+          "qos": 0,
+          "retain": false
+        },
+        "sendInputData": false
+      },
+      "credentials": {
+        "mqtt": {
+          "id": "vmy0aLGuM4nrPH5D",
+          "name": "MQTT account 2"
+        }
+      }
+    },
+    {
+      "id": "pgInsert",
+      "name": "DB Log Contraction",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        660,
+        20
+      ],
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO contractions (type, logged_at, intensity) VALUES ('contraction', '{{ $json.ts }}'::timestamptz, {{ $json.intensity ? \"'\" + $json.intensity + \"'\" : 'NULL' }})"
+      },
+      "credentials": {
+        "postgres": {
+          "id": "Gsash8Ngl53AYBsJ",
+          "name": "Postgres maestro_hub"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Panic Button": {
+      "main": [
+        [
+          {
+            "node": "Track Contraction",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Track Contraction": {
+      "main": [
+        [
+          {
+            "node": "Discord",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "HA Counter",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "HA Log Event",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Notify You",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Notify Partner",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Echo Show Announce",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "DB Log Contraction",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  }
+}

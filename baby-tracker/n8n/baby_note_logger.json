@@ -1,0 +1,71 @@
+{
+  "id": "1mtXZX0IKhMW2XGU",
+  "name": "Baby Note Logger",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "protocol": "mqtt",
+        "host": "homelab.local",
+        "port": 1883,
+        "topics": "baby/note",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mqttTrigger",
+      "typeVersion": 1,
+      "position": [
+        200,
+        300
+      ],
+      "id": "mqtt1",
+      "name": "MQTT Trigger",
+      "credentials": {
+        "mqtt": {
+          "id": "vmy0aLGuM4nrPH5D",
+          "name": "MQTT account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO baby_events (event_type, note) VALUES ('note', '{{ $json.message }}')",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        420,
+        300
+      ],
+      "id": "pg2",
+      "name": "Postgres Insert Note",
+      "credentials": {
+        "postgres": {
+          "id": "Gsash8Ngl53AYBsJ",
+          "name": "Postgres maestro_hub"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "MQTT Trigger": {
+      "main": [
+        [
+          {
+            "node": "Postgres Insert Note",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  }
+}

@@ -1,0 +1,336 @@
+{
+  "id": "46kd4mI38nbHVM6t",
+  "name": "Contraction AI Assessment",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "id": "wh1",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "webhookId": "contraction-ai",
+      "position": [
+        250,
+        300
+      ],
+      "parameters": {
+        "path": "contraction-ai",
+        "httpMethod": "POST",
+        "responseMode": "onReceived"
+      }
+    },
+    {
+      "id": "pg1",
+      "name": "Query DB",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2,
+      "position": [
+        450,
+        300
+      ],
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT type, intensity, logged_at FROM contractions WHERE type='contraction' AND logged_at > NOW() - INTERVAL '2 hours' ORDER BY logged_at DESC"
+      },
+      "credentials": {
+        "postgres": {
+          "id": "Gsash8Ngl53AYBsJ",
+          "name": "Postgres maestro_hub"
+        }
+      }
+    },
+    {
+      "id": "stats1",
+      "name": "Build Prompt",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        650,
+        300
+      ],
+      "parameters": {
+        "jsCode": "const recent = $input.all().map(i => i.json);\nif (recent.length < 2) {\n  return [{ json: { skip: true, assessment: 'Need 2+ contractions in 2h', localTime: new Date().toLocaleString('en-US', {timeZone: 'America/New_York', hour12: true, hour: '2-digit', minute: '2-digit'}) } }];\n}\nconst times = recent.map(e => new Date(e.logged_at).getTime()).sort((a,b) => b - a);\nlet gaps = [];\nfor (let i = 0; i < times.length - 1; i++) gaps.push((times[i] - times[i+1]) / 60000);\nconst avgGap = Math.round(gaps.reduce((a,b) => a+b, 0) / gaps.length * 10) / 10;\nconst iMap = { mild: 1, moderate: 2, strong: 3, intense: 4 };\nconst iLabels = ['mild', 'moderate', 'strong', 'intense'];\nconst withI = recent.filter(e => e.intensity && iMap[e.intensity]);\nlet avgI = null, iLabel = null;\nif (withI.length > 0) {\n  avgI = Math.round(withI.reduce((s,e) => s + iMap[e.intensity], 0) / withI.length * 10) / 10;\n  iLabel = iLabels[Math.round(avgI) - 1];\n}\nconst breakdown = {};\nrecent.forEach(e => { const k = e.intensity || 'unrated'; breakdown[k] = (breakdown[k] || 0) + 1; });\nconst prompt = `You are a labor assessment assistant. Based on contraction data from the last 2 hours, give a brief assessment (2 sentences max). Include the likely labor stage and one practical suggestion.\\n\\nData:\\n- ${recent.length} contractions in last 2 hours\\n- Average gap: ${avgGap} minutes\\n- Average intensity: ${avgI || 'not rated'}/4 (${iLabel || 'n/a'})\\n- Intensity breakdown: ${JSON.stringify(breakdown)}\\n- Shortest gap: ${Math.round(Math.min(...gaps) * 10) / 10} min, longest: ${Math.round(Math.max(...gaps) * 10) / 10} min\\n\\nRespond with ONLY the assessment, no disclaimers. Max 2 sentences.`;\nconst localTime = new Date().toLocaleString('en-US', {timeZone: 'America/New_York', hour12: true, hour: '2-digit', minute: '2-digit'});\nreturn [{ json: { skip: false, prompt, localTime } }];"
+      }
+    },
+    {
+      "id": "if1",
+      "name": "Has Data?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        850,
+        300
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "combinator": "and",
+          "conditions": [
+            {
+              "id": "1",
+              "leftValue": "={{ $json.skip }}",
+              "rightValue": false,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "ollama1",
+      "name": "Ollama AI",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1050,
+        200
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "http://ollama.local:11434/api/generate",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ model: 'gpt-oss:120b-cloud', prompt: $json.prompt, stream: false }) }}",
+        "options": {
+          "timeout": 15000
+        }
+      }
+    },
+    {
+      "id": "set_ha_ai",
+      "name": "Update HA Assessment",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1250,
+        200
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "http://homeassistant.local:8123/api/services/input_text/set_value",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ entity_id: 'input_text.ai_assessment', value: ($('Ollama AI').first().json.response || 'No response').substring(0, 255) }) }}"
+      },
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "gj7sA9iUy7oQ4CSv",
+          "name": "HA Bearer"
+        }
+      }
+    },
+    {
+      "id": "set_ha_time",
+      "name": "Update HA Time",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1450,
+        200
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "http://homeassistant.local:8123/api/services/input_text/set_value",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ entity_id: 'input_text.ai_assessment_time', value: $('Build Prompt').first().json.localTime }) }}"
+      },
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "gj7sA9iUy7oQ4CSv",
+          "name": "HA Bearer"
+        }
+      }
+    },
+    {
+      "id": "set_ha_nodata",
+      "name": "Update HA No Data",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1050,
+        400
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "http://homeassistant.local:8123/api/services/input_text/set_value",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ entity_id: 'input_text.ai_assessment', value: $json.assessment }) }}"
+      },
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "gj7sA9iUy7oQ4CSv",
+          "name": "HA Bearer"
+        }
+      }
+    },
+    {
+      "id": "set_ha_time_nodata",
+      "name": "Update HA Time No Data",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1250,
+        400
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "http://homeassistant.local:8123/api/services/input_text/set_value",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBearerAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ entity_id: 'input_text.ai_assessment_time', value: $('Build Prompt').first().json.localTime }) }}"
+      },
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "gj7sA9iUy7oQ4CSv",
+          "name": "HA Bearer"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Query DB",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Query DB": {
+      "main": [
+        [
+          {
+            "node": "Build Prompt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Prompt": {
+      "main": [
+        [
+          {
+            "node": "Has Data?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has Data?": {
+      "main": [
+        [
+          {
+            "node": "Ollama AI",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Update HA No Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama AI": {
+      "main": [
+        [
+          {
+            "node": "Update HA Assessment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update HA Assessment": {
+      "main": [
+        [
+          {
+            "node": "Update HA Time",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update HA No Data": {
+      "main": [
+        [
+          {
+            "node": "Update HA Time No Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  }
+}

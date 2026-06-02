@@ -1,0 +1,151 @@
+{
+  "id": "T0U3ryXb3lHFar7I",
+  "name": "Baby Event Logger",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "baby-event",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        200,
+        300
+      ],
+      "id": "wh1",
+      "name": "Webhook",
+      "webhookId": "baby-event"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst results = [];\nfor (const item of items) {\n  const d = item.json.body || item.json;\n  const eventType = d.event_type || 'unknown';\n  const eventSubtype = d.event_subtype || '';\n  const note = d.note || '';\n  const now = new Date();\n  const icons = {feed:'\ud83c\udf7c',diaper:'\ud83e\uddf7',sleep:'\ud83d\ude34',bath:'\ud83d\udec1',medicine:'\ud83d\udc8a',tummy_time:'\ud83e\udd38',weight:'\u2696\ufe0f',pump:'\ud83e\uded9'};\n  const icon = icons[eventType] || '\ud83d\udcdd';\n  const displayType = eventType.replace(/_/g, ' ');\n  let title = icon + ' ' + displayType.charAt(0).toUpperCase() + displayType.slice(1);\n  if (eventSubtype) title += ' (' + eventSubtype + ')';\n  const dtNY = new Date(now.toLocaleString('en-US', {timeZone: 'America/New_York'}));\n  const h = dtNY.getHours();\n  const m = dtNY.getMinutes();\n  const ampm = h >= 12 ? 'PM' : 'AM';\n  const h12 = h % 12 || 12;\n  const timeStr = h12 + ':' + String(m).padStart(2,'0') + ' ' + ampm;\n  let msg = title + ' at ' + timeStr;\n  if (note) msg += '\\n' + note;\n  results.push({json: {event_type: eventType, event_subtype: eventSubtype, note: note, logged_at: now.toISOString(), title: title, message: msg}});\n}\nreturn results;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        420,
+        300
+      ],
+      "id": "code1",
+      "name": "Format Event"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO baby_events (event_type, event_subtype, note, logged_at) VALUES ('{{ $json.event_type }}', '{{ $json.event_subtype }}', '{{ $json.note }}', '{{ $json.logged_at }}')",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        680,
+        160
+      ],
+      "id": "pg1",
+      "name": "Postgres Insert",
+      "credentials": {
+        "postgres": {
+          "id": "Gsash8Ngl53AYBsJ",
+          "name": "Postgres maestro_hub"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://homeassistant.local:8123/api/services/notify/mobile_app_your_phone",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer <HA_LONG_LIVED_TOKEN>"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\"title\": \"{{ $json.title }}\", \"message\": \"{{ $json.message }}\"}"
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        680,
+        300
+      ],
+      "id": "ha1",
+      "name": "Notify You"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://homeassistant.local:8123/api/services/notify/mobile_app_partner_phone",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer <HA_LONG_LIVED_TOKEN>"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\"title\": \"{{ $json.title }}\", \"message\": \"{{ $json.message }}\"}"
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        680,
+        440
+      ],
+      "id": "ha2",
+      "name": "Notify Partner"
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Format Event",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Event": {
+      "main": [
+        [
+          {
+            "node": "Postgres Insert",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Notify You",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Notify Partner",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  }
+}

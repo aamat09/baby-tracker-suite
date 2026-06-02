@@ -1,0 +1,93 @@
+{
+  "id": "o2qnhVVpWqYLWFk8",
+  "name": "Baby Log API",
+  "description": null,
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "GET",
+        "path": "baby-log",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        200,
+        300
+      ],
+      "id": "wh3",
+      "name": "Webhook",
+      "webhookId": "baby-log"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT id, event_type, event_subtype, note, logged_at, to_char(logged_at AT TIME ZONE 'America/New_York', 'HH12:MI AM, Mon DD') as time FROM baby_events ORDER BY logged_at DESC LIMIT 200",
+        "options": {
+          "queryBatching": "independently"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        420,
+        300
+      ],
+      "id": "pg3",
+      "name": "Fetch Events",
+      "credentials": {
+        "postgres": {
+          "id": "Gsash8Ngl53AYBsJ",
+          "name": "Postgres maestro_hub"
+        }
+      },
+      "onError": "continueRegularOutput",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const rows = $input.all().map(i => i.json);\n\n// Timezone helper\nfunction toNY(d) {\n  return new Date(new Date(d).toLocaleString('en-US', {timeZone: 'America/New_York'}));\n}\n\nconst nowNY = toNY(new Date());\nconst todayStart = new Date(nowNY);\ntodayStart.setHours(0,0,0,0);\n\n// Filter today's events\nconst today = rows.filter(r => {\n  const t = toNY(r.logged_at);\n  return t >= todayStart;\n});\n\nconst feedsToday = today.filter(r => r.event_type === 'feed');\nconst diapersToday = today.filter(r => r.event_type === 'diaper');\nconst sleepToday = today.filter(r => r.event_type === 'sleep');\nconst bathsToday = today.filter(r => r.event_type === 'bath');\nconst medicinesToday = today.filter(r => r.event_type === 'medicine');\nconst tummyTimesToday = today.filter(r => r.event_type === 'tummy_time');\n\n// Last feed\nconst lastFeed = rows.find(r => r.event_type === 'feed');\nlet last_feed_min = null;\nlet last_feed_type = null;\nif (lastFeed) {\n  last_feed_min = Math.round((Date.now() - new Date(lastFeed.logged_at).getTime()) / 60000);\n  last_feed_type = lastFeed.event_subtype || null;\n}\n\n// Last diaper\nconst lastDiaper = rows.find(r => r.event_type === 'diaper');\nlet last_diaper_min = null;\nlet last_diaper_type = null;\nif (lastDiaper) {\n  last_diaper_min = Math.round((Date.now() - new Date(lastDiaper.logged_at).getTime()) / 60000);\n  last_diaper_type = lastDiaper.event_subtype || null;\n}\n\n// Sleep analysis\nconst latestSleep = rows.find(r => r.event_type === 'sleep');\nconst is_sleeping = latestSleep ? latestSleep.event_subtype === 'start' : false;\n\n// Sleep total today \u2014 pair start/end\nconst sleepEvents = sleepToday.slice().reverse(); // chronological\nlet sleepMinToday = 0;\nlet pendingStart = null;\nfor (const ev of sleepEvents) {\n  if (ev.event_subtype === 'start') {\n    pendingStart = new Date(ev.logged_at);\n  } else if (ev.event_subtype === 'end' && pendingStart) {\n    sleepMinToday += (new Date(ev.logged_at).getTime() - pendingStart.getTime()) / 60000;\n    pendingStart = null;\n  }\n}\n// If currently sleeping, add time since last start\nif (is_sleeping && pendingStart) {\n  sleepMinToday += (Date.now() - pendingStart.getTime()) / 60000;\n}\nsleepMinToday = Math.round(sleepMinToday);\nconst sleepH = Math.floor(sleepMinToday / 60);\nconst sleepM = sleepMinToday % 60;\nconst sleep_total_today = sleepH + 'h ' + sleepM + 'm';\n\nconst stats = {\n  last_feed_min,\n  last_feed_type,\n  last_diaper_min,\n  last_diaper_type,\n  feeds_today: feedsToday.length,\n  diapers_today: diapersToday.length,\n  sleep_total_today,\n  sleep_min_today: sleepMinToday,\n  is_sleeping,\n  baths_today: bathsToday.length,\n  medicines_today: medicinesToday.length,\n  tummy_times_today: tummyTimesToday.length,\n  pumps_today: today.filter(r => r.event_type === 'pump').length\n};\n\nconst entries = rows.slice(0, 50).map(r => ({\n  id: r.id,\n  event_type: r.event_type,\n  event_subtype: r.event_subtype,\n  note: r.note,\n  logged_at: r.logged_at,\n  time: r.time\n}));\n\nreturn [{json: {count: rows.length, stats, entries}}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        640,
+        300
+      ],
+      "id": "code3",
+      "name": "Compute Stats"
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Fetch Events",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Events": {
+      "main": [
+        [
+          {
+            "node": "Compute Stats",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  }
+}

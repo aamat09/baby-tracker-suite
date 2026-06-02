@@ -1,0 +1,219 @@
+# Baby Tracker Remote — ESP32-C3 SuperMini + 4x4 button matrix + RGB LED
+# Firmware for the 3D-printed physical remote.
+#
+# 15 buttons on a 4x4 scan matrix (no diodes — single-press logging):
+#   Rows (drive):  GPIO0, GPIO1, GPIO3, GPIO4
+#   Cols (sense):  GPIO5, GPIO6, GPIO7, GPIO10   (internal pullups)
+#   WS2812B LED:   GPIO8
+# The 16th position (row 3, col 3) is the LED window — no switch.
+#
+# Each press publishes MQTT to trigger the n8n baby-event webhook; the RGB
+# LED flashes the button's colour as confirmation.
+
+esphome:
+  name: baby-remote
+  friendly_name: "Baby Remote"
+  project:
+    name: "smarthomemaestro.baby_remote"
+    version: "2026.1.0"
+
+esp32:
+  board: esp32-c3-devkitm-1
+  framework:
+    type: esp-idf
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  fast_connect: true
+  power_save_mode: HIGH
+
+mqtt:
+  broker: !secret mqtt_broker
+  port: 1883
+  username: !secret mqtt_username
+  password: !secret mqtt_password
+  discovery: false
+
+logger:
+  level: WARN
+
+# RGB LED for button press feedback (WS2812B on GPIO8)
+light:
+  - platform: neopixelbus
+    id: status_led
+    type: GRB
+    variant: WS2812
+    pin: GPIO8
+    num_leds: 1
+    name: "Status LED"
+    internal: true
+    default_transition_length: 0s
+
+# 4x4 scan matrix — 8 GPIOs for up to 16 keys (no diodes, no pulldowns →
+# rows driven, columns read via internal pullups).
+matrix_keypad:
+  id: keypad
+  rows:
+    - pin: GPIO0
+    - pin: GPIO1
+    - pin: GPIO3
+    - pin: GPIO4
+  columns:
+    - pin: GPIO5
+    - pin: GPIO6
+    - pin: GPIO7
+    - pin: GPIO10
+  has_diodes: false
+  has_pulldowns: false
+
+# Helper script to flash the LED and publish the event
+script:
+  - id: log_event
+    parameters:
+      event_type: string
+      event_subtype: string
+      r: int
+      g: int
+      b: int
+    then:
+      - light.turn_on:
+          id: status_led
+          red: !lambda "return r / 255.0;"
+          green: !lambda "return g / 255.0;"
+          blue: !lambda "return b / 255.0;"
+          brightness: 100%
+      - mqtt.publish:
+          topic: "baby/remote/event"
+          payload: !lambda |-
+            return "{\"event_type\":\"" + event_type + "\",\"event_subtype\":\"" + event_subtype + "\"}";
+      - delay: 500ms
+      - light.turn_off:
+          id: status_led
+
+# One binary_sensor per matrix position (row, col). Layout matches the
+# 3D-printed panel; position (3,3) is the LED window and is intentionally unused.
+binary_sensor:
+  # ── Row 0: Feed ──
+  - platform: matrix_keypad
+    keypad_id: keypad
+    row: 0
+    col: 0
+    name: "Breast"
+    on_press:
+      - script.execute: {id: log_event, event_type: "feed", event_subtype: "breast", r: 255, g: 105, b: 180}
+
+  - platform: matrix_keypad
+    keypad_id: keypad
+    row: 0
+    col: 1
+    name: "Bottle"
+    on_press:
+      - script.execute: {id: log_event, event_type: "feed", event_subtype: "bottle", r: 74, g: 144, b: 217}
+
+  - platform: matrix_keypad
+    keypad_id: keypad
+    row: 0
+    col: 2
+    name: "Solid"
+    on_press:
+      - script.execute: {id: log_event, event_type: "feed", event_subtype: "solid", r: 45, g: 106, b: 79}
+
+  - platform: matrix_keypad
+    keypad_id: keypad
+    row: 0
+    col: 3
+    name: "Sleep"
+    on_press:
+      - script.execute: {id: log_event, event_type: "sleep", event_subtype: "toggle", r: 123, g: 104, b: 238}
+
+  # ── Row 1: Pump + Other ──
+  - platform: matrix_keypad
+    keypad_id: keypad
+    row: 1
+    col: 0
+    name: "Pump L"
+    on_press:
+      - script.execute: {id: log_event, event_type: "pump", event_subtype: "left", r: 177, g: 156, b: 217}
+
+  - platform: matrix_keypad
+    keypad_id: keypad
+    row: 1
+    col: 1
+    name: "Pump R"
+    on_press:
+      - script.execute: {id: log_event, event_type: "pump", event_subtype: "right", r: 177, g: 156, b: 217}
+
+  - platform: matrix_keypad
+    keypad_id: keypad
+    row: 1
+    col: 2
+    name: "Bath"
+    on_press:
+      - script.execute: {id: log_event, event_type: "bath", event_subtype: "", r: 0, g: 206, b: 209}
+
+  - platform: matrix_keypad
+    keypad_id: keypad
+    row: 1
+    col: 3
+    name: "Medicine"
+    on_press:
+      - script.execute: {id: log_event, event_type: "medicine", event_subtype: "", r: 220, g: 53, b: 69}
+
+  # ── Row 2: Diapers ──
+  - platform: matrix_keypad
+    keypad_id: keypad
+    row: 2
+    col: 0
+    name: "Pee"
+    on_press:
+      - script.execute: {id: log_event, event_type: "diaper", event_subtype: "pee", r: 255, g: 215, b: 0}
+
+  - platform: matrix_keypad
+    keypad_id: keypad
+    row: 2
+    col: 1
+    name: "Poop"
+    on_press:
+      - script.execute: {id: log_event, event_type: "diaper", event_subtype: "poop", r: 210, g: 180, b: 140}
+
+  - platform: matrix_keypad
+    keypad_id: keypad
+    row: 2
+    col: 2
+    name: "Both"
+    on_press:
+      - script.execute: {id: log_event, event_type: "diaper", event_subtype: "both", r: 139, g: 105, b: 20}
+
+  - platform: matrix_keypad
+    keypad_id: keypad
+    row: 2
+    col: 3
+    name: "Change"
+    on_press:
+      - script.execute: {id: log_event, event_type: "diaper", event_subtype: "change", r: 189, g: 183, b: 107}
+
+  # ── Row 3: Other (col 3 = LED window, no switch) ──
+  - platform: matrix_keypad
+    keypad_id: keypad
+    row: 3
+    col: 0
+    name: "Tummy Time"
+    on_press:
+      - script.execute: {id: log_event, event_type: "tummy_time", event_subtype: "", r: 0, g: 128, b: 128}
+
+  - platform: matrix_keypad
+    keypad_id: keypad
+    row: 3
+    col: 1
+    name: "Weight"
+    on_press:
+      - script.execute: {id: log_event, event_type: "weight", event_subtype: "", r: 128, g: 128, b: 128}
+
+  - platform: matrix_keypad
+    keypad_id: keypad
+    row: 3
+    col: 2
+    name: "Note"
+    on_press:
+      - script.execute: {id: log_event, event_type: "note", event_subtype: "remote", r: 245, g: 245, b: 245}

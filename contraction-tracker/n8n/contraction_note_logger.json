@@ -1,0 +1,69 @@
+{
+  "id": "aa56WWfsvjegbr1D",
+  "name": "Contraction Note Logger",
+  "description": null,
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "id": "node1",
+      "name": "MQTT Note",
+      "type": "n8n-nodes-base.mqttTrigger",
+      "position": [
+        250,
+        300
+      ],
+      "typeVersion": 1,
+      "parameters": {
+        "protocol": "mqtt",
+        "host": "homelab.local",
+        "port": 1883,
+        "topics": "contractions/note",
+        "options": {}
+      },
+      "credentials": {
+        "mqtt": {
+          "id": "vmy0aLGuM4nrPH5D",
+          "name": "MQTT account 2"
+        }
+      }
+    },
+    {
+      "id": "node2",
+      "name": "DB Log Note",
+      "type": "n8n-nodes-base.postgres",
+      "position": [
+        450,
+        300
+      ],
+      "typeVersion": 2,
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO contractions (type, note) VALUES ('note', '{{ $json.message }}')"
+      },
+      "credentials": {
+        "postgres": {
+          "id": "Gsash8Ngl53AYBsJ",
+          "name": "Postgres maestro_hub"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "MQTT Note": {
+      "main": [
+        [
+          {
+            "node": "DB Log Note",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  }
+}

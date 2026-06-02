@@ -1,0 +1,864 @@
+(kicad_sch
+  (version 20250114)
+  (generator "baby_remote_gen")
+  (generator_version "9.0")
+  (uuid "d3d987a5-b94e-44f4-a1cf-c80325f5b2c2")
+  (paper "A4")
+  (title_block (title "Baby Remote — 4x4 button matrix") (rev "2026.1.0") (company "Smart Home Maestro"))
+  (lib_symbols
+(symbol "ESP32-C3-SuperMini:ESP32-C3_SUPERMINI" (pin_names (offset 1.016)) (in_bom yes) (on_board yes)
+    (property "Reference" "U" (id 0) (at -12.7 16.002 0)
+      (effects (font (size 1.27 1.27)) (justify bottom left))
+    )
+    (property "Value" "ESP32-C3_SUPERMINI" (id 1) (at -12.7 -20.32 0)
+      (effects (font (size 1.27 1.27)) (justify bottom left))
+    )
+    (property "Footprint" "ESP32-C3_SUPERMINI:MODULE_ESP32-C3_SUPERMINI" (id 2) (at 0 0 0)
+      (effects (font (size 1.27 1.27)) (justify bottom) hide)
+    )
+    (property "MF" "Espressif Systems" (id 4) (at 0 0 0)
+      (effects (font (size 1.27 1.27)) (justify bottom) hide)
+    )
+    (property "MAXIMUM_PACKAGE_HEIGHT" "4.2mm" (id 5) (at 0 0 0)
+      (effects (font (size 1.27 1.27)) (justify bottom) hide)
+    )
+    (property "Package" "Package" (id 6) (at 0 0 0)
+      (effects (font (size 1.27 1.27)) (justify bottom) hide)
+    )
+    (property "Price" "None" (id 7) (at 0 0 0)
+      (effects (font (size 1.27 1.27)) (justify bottom) hide)
+    )
+    (property "Check_prices" "https://www.snapeda.com/parts/ESP32-C3%20SuperMini/Espressif+Systems/view-part/?ref=eda" (id 8) (at 0 0 0)
+      (effects (font (size 1.27 1.27)) (justify bottom) hide)
+    )
+    (property "STANDARD" "Manufacturer Recommendations" (id 9) (at 0 0 0)
+      (effects (font (size 1.27 1.27)) (justify bottom) hide)
+    )
+    (property "PARTREV" "" (id 10) (at 0 0 0)
+      (effects (font (size 1.27 1.27)) (justify bottom) hide)
+    )
+    (property "SnapEDA_Link" "https://www.snapeda.com/parts/ESP32-C3%20SuperMini/Espressif+Systems/view-part/?ref=snap" (id 11) (at 0 0 0)
+      (effects (font (size 1.27 1.27)) (justify bottom) hide)
+    )
+    (property "MP" "ESP32-C3 SuperMini" (id 12) (at 0 0 0)
+      (effects (font (size 1.27 1.27)) (justify bottom) hide)
+    )
+    (property "Description" "\nSuper tiny ESP32-C3 board\n" (id 13) (at 0 0 0)
+      (effects (font (size 1.27 1.27)) (justify bottom) hide)
+    )
+    (property "Availability" "Not in stock" (id 14) (at 0 0 0)
+      (effects (font (size 1.27 1.27)) (justify bottom) hide)
+    )
+    (property "MANUFACTURER" "Espressif" (id 15) (at 0 0 0)
+      (effects (font (size 1.27 1.27)) (justify bottom) hide)
+    )
+    (symbol "ESP32-C3_SUPERMINI_0_0"
+      (rectangle (start -12.7 -17.78) (end 12.7 15.24)
+        (stroke (width 0.254)) (fill (type background))
+      )
+      (pin power_in line (at 17.78 12.7 180.0) (length 5.08)
+        (name "5V"
+          (effects (font (size 1.016 1.016)))
+        )
+        (number "5V"
+          (effects (font (size 1.016 1.016)))
+        )
+      )
+      (pin power_in line (at 17.78 -15.24 180.0) (length 5.08)
+        (name "GND"
+          (effects (font (size 1.016 1.016)))
+        )
+        (number "G"
+          (effects (font (size 1.016 1.016)))
+        )
+      )
+      (pin power_in line (at 17.78 10.16 180.0) (length 5.08)
+        (name "3V3"
+          (effects (font (size 1.016 1.016)))
+        )
+        (number "3.3"
+          (effects (font (size 1.016 1.016)))
+        )
+      )
+      (pin bidirectional line (at -17.78 5.08 0) (length 5.08)
+        (name "GPIO0"
+          (effects (font (size 1.016 1.016)))
+        )
+        (number "0"
+          (effects (font (size 1.016 1.016)))
+        )
+      )
+      (pin bidirectional line (at -17.78 2.54 0) (length 5.08)
+        (name "GPIO1"
+          (effects (font (size 1.016 1.016)))
+        )
+        (number "1"
+          (effects (font (size 1.016 1.016)))
+        )
+      )
+      (pin bidirectional line (at -17.78 0.0 0) (length 5.08)
+        (name "GPIO2"
+          (effects (font (size 1.016 1.016)))
+        )
+        (number "2"
+          (effects (font (size 1.016 1.016)))
+        )
+      )
+      (pin bidirectional line (at -17.78 -2.54 0) (length 5.08)
+        (name "GPIO3"
+          (effects (font (size 1.016 1.016)))
+        )
+        (number "3"
+          (effects (font (size 1.016 1.016)))
+        )
+      )
+      (pin bidirectional line (at -17.78 -5.08 0) (length 5.08)
+        (name "GPIO4"
+          (effects (font (size 1.016 1.016)))
+        )
+        (number "4"
+          (effects (font (size 1.016 1.016)))
+        )
+      )
+      (pin bidirectional line (at -17.78 -7.62 0) (length 5.08)
+        (name "GPIO5"
+          (effects (font (size 1.016 1.016)))
+        )
+        (number "5"
+          (effects (font (size 1.016 1.016)))
+        )
+      )
+      (pin bidirectional line (at -17.78 -10.16 0) (length 5.08)
+        (name "GPIO6"
+          (effects (font (size 1.016 1.016)))
+        )
+        (number "6"
+          (effects (font (size 1.016 1.016)))
+        )
+      )
+      (pin bidirectional line (at 17.78 5.08 180.0) (length 5.08)
+        (name "GPIO7"
+          (effects (font (size 1.016 1.016)))
+        )
+        (number "7"
+          (effects (font (size 1.016 1.016)))
+        )
+      )
+      (pin bidirectional line (at 17.78 2.54 180.0) (length 5.08)
+        (name "GPIO8"
+          (effects (font (size 1.016 1.016)))
+        )
+        (number "8"
+          (effects (font (size 1.016 1.016)))
+        )
+      )
+      (pin bidirectional line (at 17.78 0.0 180.0) (length 5.08)
+        (name "GPIO9"
+          (effects (font (size 1.016 1.016)))
+        )
+        (number "9"
+          (effects (font (size 1.016 1.016)))
+        )
+      )
+      (pin bidirectional line (at 17.78 -2.54 180.0) (length 5.08)
+        (name "GPIO10"
+          (effects (font (size 1.016 1.016)))
+        )
+        (number "10"
+          (effects (font (size 1.016 1.016)))
+        )
+      )
+      (pin bidirectional line (at 17.78 -5.08 180.0) (length 5.08)
+        (name "GPIO20"
+          (effects (font (size 1.016 1.016)))
+        )
+        (number "20"
+          (effects (font (size 1.016 1.016)))
+        )
+      )
+      (pin bidirectional line (at 17.78 -7.62 180.0) (length 5.08)
+        (name "GPIO21"
+          (effects (font (size 1.016 1.016)))
+        )
+        (number "21"
+          (effects (font (size 1.016 1.016)))
+        )
+      )
+    )
+  )
+(symbol "Switch:SW_Push"
+		(pin_numbers
+			(hide yes)
+		)
+		(pin_names
+			(offset 1.016)
+			(hide yes)
+		)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(duplicate_pin_numbers_are_jumpers no)
+		(property "Reference" "SW"
+			(at 1.27 2.54 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "SW_Push"
+			(at 0 -1.524 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 0 5.08 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 0 5.08 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Push button switch, generic, two pins"
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "ki_keywords" "switch normally-open pushbutton push-button"
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(symbol "SW_Push_0_1"
+			(circle
+				(center -2.032 0)
+				(radius 0.508)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy 0 1.27) (xy 0 3.048)
+				)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(circle
+				(center 2.032 0)
+				(radius 0.508)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy 2.54 1.27) (xy -2.54 1.27)
+				)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(pin passive line
+				(at -5.08 0 0)
+				(length 2.54)
+				(name "1"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "1"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin passive line
+				(at 5.08 0 180)
+				(length 2.54)
+				(name "2"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "2"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+		)
+		(embedded_fonts no)
+	)
+(symbol "LED:WS2812B"
+		(pin_names
+			(offset 0.254)
+		)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(duplicate_pin_numbers_are_jumpers no)
+		(property "Reference" "D"
+			(at 5.08 5.715 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right bottom)
+			)
+		)
+		(property "Value" "WS2812B"
+			(at 1.27 -5.715 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(property "Footprint" "LED_SMD:LED_WS2812B_PLCC4_5.0x5.0mm_P3.2mm"
+			(at 1.27 -7.62 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(property "Datasheet" "https://cdn-shop.adafruit.com/datasheets/WS2812B.pdf"
+			(at 2.54 -9.525 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(property "Description" "RGB LED with integrated controller"
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "ki_keywords" "RGB LED NeoPixel addressable"
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "ki_fp_filters" "LED*WS2812*PLCC*5.0x5.0mm*P3.2mm*"
+			(at 0 0 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(hide yes)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(symbol "WS2812B_0_0"
+			(text "RGB"
+				(at 2.286 -4.191 0)
+				(effects
+					(font
+						(size 0.762 0.762)
+					)
+				)
+			)
+		)
+		(symbol "WS2812B_0_1"
+			(polyline
+				(pts
+					(xy 1.27 -2.54) (xy 1.778 -2.54)
+				)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy 1.27 -3.556) (xy 1.778 -3.556)
+				)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy 2.286 -1.524) (xy 1.27 -2.54) (xy 1.27 -2.032)
+				)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy 2.286 -2.54) (xy 1.27 -3.556) (xy 1.27 -3.048)
+				)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy 3.683 -1.016) (xy 3.683 -3.556) (xy 3.683 -4.064)
+				)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy 4.699 -1.524) (xy 2.667 -1.524) (xy 3.683 -3.556) (xy 4.699 -1.524)
+				)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(polyline
+				(pts
+					(xy 4.699 -3.556) (xy 2.667 -3.556)
+				)
+				(stroke
+					(width 0)
+					(type default)
+				)
+				(fill
+					(type none)
+				)
+			)
+			(rectangle
+				(start 5.08 5.08)
+				(end -5.08 -5.08)
+				(stroke
+					(width 0.254)
+					(type default)
+				)
+				(fill
+					(type background)
+				)
+			)
+		)
+		(symbol "WS2812B_1_1"
+			(pin power_in line
+				(at 0 7.62 270)
+				(length 2.54)
+				(name "VDD"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "1"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin output line
+				(at 7.62 0 180)
+				(length 2.54)
+				(name "DOUT"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "2"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin power_in line
+				(at 0 -7.62 90)
+				(length 2.54)
+				(name "VSS"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "3"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+			(pin input line
+				(at -7.62 0 0)
+				(length 2.54)
+				(name "DIN"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+				(number "4"
+					(effects
+						(font
+							(size 1.27 1.27)
+						)
+					)
+				)
+			)
+		)
+		(embedded_fonts no)
+	)
+  )
+  (symbol (lib_id "ESP32-C3-SuperMini:ESP32-C3_SUPERMINI") (at 180.34 109.22 0) (unit 1)
+    (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no)
+    (uuid "a4afd36d-1b8f-450f-a291-0ac921c5f4f5")
+    (property "Reference" "U1" (at 182.34 107.22 0) (effects (font (size 1.27 1.27)) (justify left)))
+    (property "Value" "ESP32-C3 SuperMini" (at 182.34 111.22 0) (effects (font (size 1.27 1.27)) (justify left)))
+    (property "Footprint" "ESP32-C3-SuperMini:MODULE_ESP32-C3_SUPERMINI" (at 180.34 109.22 0) (effects (font (size 1.27 1.27)) hide))
+    (pin "5V" (uuid "a8193823-8a7c-4fe4-886f-816c15a3d9a6"))
+    (pin "G" (uuid "4ac0e119-293a-4d02-842b-27800d30db08"))
+    (pin "3.3" (uuid "637e738c-ab67-4ed8-ab69-9580fd9e32e9"))
+    (pin "0" (uuid "928777d8-df71-4112-915d-62585a36fabc"))
+    (pin "1" (uuid "69678243-a618-4a42-b311-366a4ef4092e"))
+    (pin "2" (uuid "c52fa49a-0990-4291-af5d-830d02e530c1"))
+    (pin "3" (uuid "9db7cdea-dc6b-4e38-bbf0-bb1489a187cc"))
+    (pin "4" (uuid "fca12310-7eae-4f17-b759-b758320779b8"))
+    (pin "5" (uuid "88e76043-8317-486e-9d2d-92a1cecca241"))
+    (pin "6" (uuid "40923572-607e-4605-ad02-e54a84704a36"))
+    (pin "7" (uuid "860679a8-a252-475c-a596-d2d4c67abce6"))
+    (pin "8" (uuid "cb7b54ee-538a-42fc-a815-21ed7f76703a"))
+    (pin "9" (uuid "7f0c3b13-3380-4087-8c45-2354b7a40f9c"))
+    (pin "10" (uuid "ddcda42c-f9d6-4d44-b848-043519ef621e"))
+    (pin "20" (uuid "3c4ad2c8-d33e-45ab-ac6f-b5e7e8abf7ab"))
+    (pin "21" (uuid "503c6f60-1684-4d71-9d4c-e99345610c1e"))
+    (instances (project "baby-remote" (path "/d3d987a5-b94e-44f4-a1cf-c80325f5b2c2" (reference "U1") (unit 1))))
+  )
+  (symbol (lib_id "Switch:SW_Push") (at 60.96 60.96 0) (unit 1)
+    (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no)
+    (uuid "c1c1a462-f292-4bd8-8840-0786be3820d9")
+    (property "Reference" "SW1" (at 62.96 58.96 0) (effects (font (size 1.27 1.27)) (justify left)))
+    (property "Value" "Breast" (at 62.96 62.96 0) (effects (font (size 1.27 1.27)) (justify left)))
+    (property "Footprint" "Button_Switch_THT:SW_PUSH_6mm_H13mm" (at 60.96 60.96 0) (effects (font (size 1.27 1.27)) hide))
+    (pin "1" (uuid "67df9de5-eb89-4664-9f57-24cf5008b49d"))
+    (pin "2" (uuid "11d33d2e-0a28-4ec6-b429-70f996df61c2"))
+    (instances (project "baby-remote" (path "/d3d987a5-b94e-44f4-a1cf-c80325f5b2c2" (reference "SW1") (unit 1))))
+  )
+  (symbol (lib_id "Switch:SW_Push") (at 91.44 60.96 0) (unit 1)
+    (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no)
+    (uuid "e80dca6a-5b9b-463e-bd2c-aa183c44fbf5")
+    (property "Reference" "SW2" (at 93.44 58.96 0) (effects (font (size 1.27 1.27)) (justify left)))
+    (property "Value" "Bottle" (at 93.44 62.96 0) (effects (font (size 1.27 1.27)) (justify left)))
+    (property "Footprint" "Button_Switch_THT:SW_PUSH_6mm_H13mm" (at 91.44 60.96 0) (effects (font (size 1.27 1.27)) hide))
+    (pin "1" (uuid "b08e85d7-82ab-48b0-b637-161a9cc7f3b8"))
+    (pin "2" (uuid "9a1d2f65-c91b-4f31-97a2-09cf775144ca"))
+    (instances (project "baby-remote" (path "/d3d987a5-b94e-44f4-a1cf-c80325f5b2c2" (reference "SW2") (unit 1))))
+  )
+  (symbol (lib_id "Switch:SW_Push") (at 121.92 60.96 0) (unit 1)
+    (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no)
+    (uuid "91207908-0f79-42f6-94c9-cb6e1c2543a3")
+    (property "Reference" "SW3" (at 123.92 58.96 0) (effects (font (size 1.27 1.27)) (justify left)))
+    (property "Value" "Solid" (at 123.92 62.96 0) (effects (font (size 1.27 1.27)) (justify left)))
+    (property "Footprint" "Button_Switch_THT:SW_PUSH_6mm_H13mm" (at 121.92 60.96 0) (effects (font (size 1.27 1.27)) hide))
+    (pin "1" (uuid "725a3b02-0bf5-4a7d-b7e0-93cb920ac7d6"))
+    (pin "2" (uuid "ae855cd2-8fdf-48e8-95c2-ccf4b8e50179"))
+    (instances (project "baby-remote" (path "/d3d987a5-b94e-44f4-a1cf-c80325f5b2c2" (reference "SW3") (unit 1))))
+  )
+  (symbol (lib_id "Switch:SW_Push") (at 152.4 60.96 0) (unit 1)
+    (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no)
+    (uuid "a069a9db-dc33-4904-af32-1f1afc931dba")
+    (property "Reference" "SW4" (at 154.4 58.96 0) (effects (font (size 1.27 1.27)) (justify left)))
+    (property "Value" "Sleep" (at 154.4 62.96 0) (effects (font (size 1.27 1.27)) (justify left)))
+    (property "Footprint" "Button_Switch_THT:SW_PUSH_6mm_H13mm" (at 152.4 60.96 0) (effects (font (size 1.27 1.27)) hide))
+    (pin "1" (uuid "2a08bc7f-6258-43db-be80-73e87baa4e9b"))
+    (pin "2" (uuid "a0ace814-0d27-4f72-85ae-d3a1dc50c4c3"))
+    (instances (project "baby-remote" (path "/d3d987a5-b94e-44f4-a1cf-c80325f5b2c2" (reference "SW4") (unit 1))))
+  )
+  (symbol (lib_id "Switch:SW_Push") (at 60.96 86.36 0) (unit 1)
+    (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no)
+    (uuid "9143bbc1-52e9-4dea-b0f1-7156ccba67dd")
+    (property "Reference" "SW5" (at 62.96 84.36 0) (effects (font (size 1.27 1.27)) (justify left)))
+    (property "Value" "PumpL" (at 62.96 88.36 0) (effects (font (size 1.27 1.27)) (justify left)))
+    (property "Footprint" "Button_Switch_THT:SW_PUSH_6mm_H13mm" (at 60.96 86.36 0) (effects (font (size 1.27 1.27)) hide))
+    (pin "1" (uuid "d14fba8c-6c5a-4016-b352-0337e4cc7683"))
+    (pin "2" (uuid "ce5d0f44-5e29-4e8a-8f7c-00ace40a3707"))
+    (instances (project "baby-remote" (path "/d3d987a5-b94e-44f4-a1cf-c80325f5b2c2" (reference "SW5") (unit 1))))
+  )
+  (symbol (lib_id "Switch:SW_Push") (at 91.44 86.36 0) (unit 1)
+    (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no)
+    (uuid "91d267dc-fa2c-435b-b369-d6c05f931fee")
+    (property "Reference" "SW6" (at 93.44 84.36 0) (effects (font (size 1.27 1.27)) (justify left)))
+    (property "Value" "PumpR" (at 93.44 88.36 0) (effects (font (size 1.27 1.27)) (justify left)))
+    (property "Footprint" "Button_Switch_THT:SW_PUSH_6mm_H13mm" (at 91.44 86.36 0) (effects (font (size 1.27 1.27)) hide))
+    (pin "1" (uuid "787587a4-6958-42c5-9685-6c92f1f7c5a3"))
+    (pin "2" (uuid "ba07d2f5-89e6-4575-8b57-45b1a72ee48d"))
+    (instances (project "baby-remote" (path "/d3d987a5-b94e-44f4-a1cf-c80325f5b2c2" (reference "SW6") (unit 1))))
+  )
+  (symbol (lib_id "Switch:SW_Push") (at 121.92 86.36 0) (unit 1)
+    (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no)
+    (uuid "3ce1e1eb-af36-4f23-a4a2-ec992fe60d9d")
+    (property "Reference" "SW7" (at 123.92 84.36 0) (effects (font (size 1.27 1.27)) (justify left)))
+    (property "Value" "Bath" (at 123.92 88.36 0) (effects (font (size 1.27 1.27)) (justify left)))
+    (property "Footprint" "Button_Switch_THT:SW_PUSH_6mm_H13mm" (at 121.92 86.36 0) (effects (font (size 1.27 1.27)) hide))
+    (pin "1" (uuid "a0edb2d3-5b8f-40a6-a7cd-2ad4eae11571"))
+    (pin "2" (uuid "1f4ba82d-48dc-45b7-ad28-ab5161d7ecde"))
+    (instances (project "baby-remote" (path "/d3d987a5-b94e-44f4-a1cf-c80325f5b2c2" (reference "SW7") (unit 1))))
+  )
+  (symbol (lib_id "Switch:SW_Push") (at 152.4 86.36 0) (unit 1)
+    (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no)
+    (uuid "52265724-a4d0-4644-84de-4ea88ae3c26e")
+    (property "Reference" "SW8" (at 154.4 84.36 0) (effects (font (size 1.27 1.27)) (justify left)))
+    (property "Value" "Meds" (at 154.4 88.36 0) (effects (font (size 1.27 1.27)) (justify left)))
+    (property "Footprint" "Button_Switch_THT:SW_PUSH_6mm_H13mm" (at 152.4 86.36 0) (effects (font (size 1.27 1.27)) hide))
+    (pin "1" (uuid "a6fbb9e2-5368-4baf-823e-be2003ab572e"))
+    (pin "2" (uuid "820c57fd-eff8-4a44-8ac1-2293f772bc56"))
+    (instances (project "baby-remote" (path "/d3d987a5-b94e-44f4-a1cf-c80325f5b2c2" (reference "SW8") (unit 1))))
+  )
+  (symbol (lib_id "Switch:SW_Push") (at 60.96 111.76 0) (unit 1)
+    (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no)
+    (uuid "076c2fc0-58f1-45b2-8977-ea3c2664196a")
+    (property "Reference" "SW9" (at 62.96 109.76 0) (effects (font (size 1.27 1.27)) (justify left)))
+    (property "Value" "Pee" (at 62.96 113.76 0) (effects (font (size 1.27 1.27)) (justify left)))
+    (property "Footprint" "Button_Switch_THT:SW_PUSH_6mm_H13mm" (at 60.96 111.76 0) (effects (font (size 1.27 1.27)) hide))
+    (pin "1" (uuid "907cd7cb-4d26-4f61-82b3-a0cfcd5a7688"))
+    (pin "2" (uuid "3e457b0a-d34c-4721-9e56-6581f56b5181"))
+    (instances (project "baby-remote" (path "/d3d987a5-b94e-44f4-a1cf-c80325f5b2c2" (reference "SW9") (unit 1))))
+  )
+  (symbol (lib_id "Switch:SW_Push") (at 91.44 111.76 0) (unit 1)
+    (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no)
+    (uuid "2c7ee174-575a-43cb-8730-acde94bcf636")
+    (property "Reference" "SW10" (at 93.44 109.76 0) (effects (font (size 1.27 1.27)) (justify left)))
+    (property "Value" "Poop" (at 93.44 113.76 0) (effects (font (size 1.27 1.27)) (justify left)))
+    (property "Footprint" "Button_Switch_THT:SW_PUSH_6mm_H13mm" (at 91.44 111.76 0) (effects (font (size 1.27 1.27)) hide))
+    (pin "1" (uuid "035ec543-e266-4947-88fb-883346e45b90"))
+    (pin "2" (uuid "8ea8930e-c6d3-4175-b64f-86ae1fa57085"))
+    (instances (project "baby-remote" (path "/d3d987a5-b94e-44f4-a1cf-c80325f5b2c2" (reference "SW10") (unit 1))))
+  )
+  (symbol (lib_id "Switch:SW_Push") (at 121.92 111.76 0) (unit 1)
+    (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no)
+    (uuid "60c6378a-3991-474d-ba67-abb47499f268")
+    (property "Reference" "SW11" (at 123.92 109.76 0) (effects (font (size 1.27 1.27)) (justify left)))
+    (property "Value" "Both" (at 123.92 113.76 0) (effects (font (size 1.27 1.27)) (justify left)))
+    (property "Footprint" "Button_Switch_THT:SW_PUSH_6mm_H13mm" (at 121.92 111.76 0) (effects (font (size 1.27 1.27)) hide))
+    (pin "1" (uuid "7f7ebfa6-947b-4044-af86-4dc5cc562950"))
+    (pin "2" (uuid "8e6b8691-837b-4749-8626-03d4e2645565"))
+    (instances (project "baby-remote" (path "/d3d987a5-b94e-44f4-a1cf-c80325f5b2c2" (reference "SW11") (unit 1))))
+  )
+  (symbol (lib_id "Switch:SW_Push") (at 152.4 111.76 0) (unit 1)
+    (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no)
+    (uuid "d242e148-5207-4963-a055-5ba2d59865ce")
+    (property "Reference" "SW12" (at 154.4 109.76 0) (effects (font (size 1.27 1.27)) (justify left)))
+    (property "Value" "Change" (at 154.4 113.76 0) (effects (font (size 1.27 1.27)) (justify left)))
+    (property "Footprint" "Button_Switch_THT:SW_PUSH_6mm_H13mm" (at 152.4 111.76 0) (effects (font (size 1.27 1.27)) hide))
+    (pin "1" (uuid "279fe810-863e-4081-b62e-684988e80385"))
+    (pin "2" (uuid "6332e611-7c40-4c7a-8d20-875f2dbb52cf"))
+    (instances (project "baby-remote" (path "/d3d987a5-b94e-44f4-a1cf-c80325f5b2c2" (reference "SW12") (unit 1))))
+  )
+  (symbol (lib_id "Switch:SW_Push") (at 60.96 137.16 0) (unit 1)
+    (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no)
+    (uuid "081aa723-f73f-4908-bc62-4f7662654610")
+    (property "Reference" "SW13" (at 62.96 135.16 0) (effects (font (size 1.27 1.27)) (justify left)))
+    (property "Value" "Tummy" (at 62.96 139.16 0) (effects (font (size 1.27 1.27)) (justify left)))
+    (property "Footprint" "Button_Switch_THT:SW_PUSH_6mm_H13mm" (at 60.96 137.16 0) (effects (font (size 1.27 1.27)) hide))
+    (pin "1" (uuid "b9622a78-ff9e-4b30-827a-3638f9429084"))
+    (pin "2" (uuid "64b785a1-9a37-4d43-b2d9-ca8ae2feb745"))
+    (instances (project "baby-remote" (path "/d3d987a5-b94e-44f4-a1cf-c80325f5b2c2" (reference "SW13") (unit 1))))
+  )
+  (symbol (lib_id "Switch:SW_Push") (at 91.44 137.16 0) (unit 1)
+    (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no)
+    (uuid "af8b0020-95bb-4b75-b7e3-7fac0dd31833")
+    (property "Reference" "SW14" (at 93.44 135.16 0) (effects (font (size 1.27 1.27)) (justify left)))
+    (property "Value" "Weight" (at 93.44 139.16 0) (effects (font (size 1.27 1.27)) (justify left)))
+    (property "Footprint" "Button_Switch_THT:SW_PUSH_6mm_H13mm" (at 91.44 137.16 0) (effects (font (size 1.27 1.27)) hide))
+    (pin "1" (uuid "39421b50-6bd4-45ec-b690-70599cab7a9b"))
+    (pin "2" (uuid "6b529c92-0572-4491-8062-7f058facc897"))
+    (instances (project "baby-remote" (path "/d3d987a5-b94e-44f4-a1cf-c80325f5b2c2" (reference "SW14") (unit 1))))
+  )
+  (symbol (lib_id "Switch:SW_Push") (at 121.92 137.16 0) (unit 1)
+    (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no)
+    (uuid "aafaeff9-c4b7-4712-93c4-021834fd4ce7")
+    (property "Reference" "SW15" (at 123.92 135.16 0) (effects (font (size 1.27 1.27)) (justify left)))
+    (property "Value" "Note" (at 123.92 139.16 0) (effects (font (size 1.27 1.27)) (justify left)))
+    (property "Footprint" "Button_Switch_THT:SW_PUSH_6mm_H13mm" (at 121.92 137.16 0) (effects (font (size 1.27 1.27)) hide))
+    (pin "1" (uuid "e7e748eb-b638-4105-a016-ed17f6a06d22"))
+    (pin "2" (uuid "ea075fe5-292b-42b8-bf77-51dfa1b55ce4"))
+    (instances (project "baby-remote" (path "/d3d987a5-b94e-44f4-a1cf-c80325f5b2c2" (reference "SW15") (unit 1))))
+  )
+  (symbol (lib_id "LED:WS2812B") (at 152.4 137.16 0) (unit 1)
+    (exclude_from_sim no) (in_bom yes) (on_board yes) (dnp no)
+    (uuid "61cda0f8-808d-4325-9534-143c0b0fdebf")
+    (property "Reference" "LED1" (at 154.4 135.16 0) (effects (font (size 1.27 1.27)) (justify left)))
+    (property "Value" "WS2812B" (at 154.4 139.16 0) (effects (font (size 1.27 1.27)) (justify left)))
+    (property "Footprint" "LED_SMD:LED_WS2812B_PLCC4_5.0x5.0mm_P3.2mm" (at 152.4 137.16 0) (effects (font (size 1.27 1.27)) hide))
+    (pin "1" (uuid "1505f013-6cf9-401c-a49c-491db9e00002"))
+    (pin "2" (uuid "5ca98b20-b22f-4f7e-bbec-b42eff158b43"))
+    (pin "3" (uuid "3330583b-90b1-49dc-a86b-c64a099c6512"))
+    (pin "4" (uuid "d5dbe85c-90b1-4167-af6c-1f26709fd7c4"))
+    (instances (project "baby-remote" (path "/d3d987a5-b94e-44f4-a1cf-c80325f5b2c2" (reference "LED1") (unit 1))))
+  )
+  (label "+5V" (at 198.12 96.52 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "9a21d0fb-7444-4148-993a-9cbbb7a60c80"))
+  (label "GND" (at 198.12 124.46 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "cf123bdb-95b3-45af-bef7-5e4ab1b111c3"))
+  (label "+3V3" (at 198.12 99.06 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "097a6f5e-9242-4cfc-94de-a63777a012e5"))
+  (label "ROW0" (at 162.56 104.14 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "00eb993f-6dd0-41db-84f4-464e62350d6a"))
+  (label "ROW1" (at 162.56 106.68 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "853ac9c7-2780-4045-9a4d-52fb8a45d9f2"))
+  (label "ROW2" (at 162.56 111.76 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "904d831b-8738-4ede-b8f5-e864ace2e506"))
+  (label "ROW3" (at 162.56 114.30 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "7f8bf7ab-ae19-468f-a5f9-0b42286f9040"))
+  (label "COL0" (at 162.56 116.84 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "95cc5ac0-bc5a-4ec3-9bea-38fb1cedd233"))
+  (label "COL1" (at 162.56 119.38 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "7fd6e772-0c36-4516-9ee8-89399ba03692"))
+  (label "COL2" (at 198.12 104.14 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "31f76cf7-2268-437f-8fee-393ecc7360b6"))
+  (label "LED_DIN" (at 198.12 106.68 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "0d4f532b-e672-4f74-aeb2-db99e98fa334"))
+  (label "COL3" (at 198.12 111.76 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "d0cfb9b1-4713-49b5-9941-a6cfb8b74897"))
+  (label "ROW0" (at 55.88 60.96 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "8c387a89-ba84-45d8-98cf-eb7156b4dfc8"))
+  (label "COL0" (at 66.04 60.96 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "8414e976-66cf-45be-a85e-30ad27a3690a"))
+  (label "ROW0" (at 86.36 60.96 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "92a9daff-aa08-4196-9f8b-f4876d043400"))
+  (label "COL1" (at 96.52 60.96 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "9dd03123-6fcc-492b-98e0-24295fe2b4b5"))
+  (label "ROW0" (at 116.84 60.96 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "d7591f6c-948f-46dc-a804-f0ecd2f323bc"))
+  (label "COL2" (at 127.00 60.96 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "8d01444e-a6f1-4466-89ec-46456c6d36e2"))
+  (label "ROW0" (at 147.32 60.96 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "6e8c5aa9-0533-4c6d-a1d6-284db0f38b69"))
+  (label "COL3" (at 157.48 60.96 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "5a3cc448-295d-4e95-ac2f-61f50d4c2904"))
+  (label "ROW1" (at 55.88 86.36 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "7bcd172d-0c5d-4ea1-b185-bf7770e9c447"))
+  (label "COL0" (at 66.04 86.36 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "59529e7d-1206-41bc-af6d-62fc818a094e"))
+  (label "ROW1" (at 86.36 86.36 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "4f87da4e-63ae-487c-8531-60250353cefb"))
+  (label "COL1" (at 96.52 86.36 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "bc00ddf8-58b2-4918-8576-696f48b7aac0"))
+  (label "ROW1" (at 116.84 86.36 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "a70d6dc1-90cb-467c-b7a1-522643e813cc"))
+  (label "COL2" (at 127.00 86.36 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "373056b9-315b-4f72-9564-16f1cff08d49"))
+  (label "ROW1" (at 147.32 86.36 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "3272babc-b64b-4110-bce7-198af92b703e"))
+  (label "COL3" (at 157.48 86.36 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "c4fb2d25-8315-4af2-9733-411c9fba672e"))
+  (label "ROW2" (at 55.88 111.76 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "87ec407d-47f3-418d-9917-ea1eb865b26c"))
+  (label "COL0" (at 66.04 111.76 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "1de1aa62-6404-4dd3-809b-bfd6d4844375"))
+  (label "ROW2" (at 86.36 111.76 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "086d5bcb-e5f7-4266-b872-2c5da32fe2d0"))
+  (label "COL1" (at 96.52 111.76 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "bea5d0fd-490c-4c20-8c05-1d6d7d329e79"))
+  (label "ROW2" (at 116.84 111.76 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "5e9e8df3-8edb-49ae-8522-698be9d94757"))
+  (label "COL2" (at 127.00 111.76 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "d5d1e53a-4671-4186-8121-d279a8795069"))
+  (label "ROW2" (at 147.32 111.76 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "7ef0e6b0-4e22-4bd0-9961-7071c2cd3ab5"))
+  (label "COL3" (at 157.48 111.76 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "4fd36fe9-7ebd-453e-a559-543226bbe2a4"))
+  (label "ROW3" (at 55.88 137.16 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "f62212f5-878d-447d-a86e-833a740a3f16"))
+  (label "COL0" (at 66.04 137.16 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "571b29f7-baae-41b6-94a8-304f89d015a3"))
+  (label "ROW3" (at 86.36 137.16 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "832ce494-81f5-458b-b4c7-2ce7600e82bd"))
+  (label "COL1" (at 96.52 137.16 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "4c152338-0043-4c12-945c-3c414d46a217"))
+  (label "ROW3" (at 116.84 137.16 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "f0add058-569c-4c7e-8b6a-bcaf574e0218"))
+  (label "COL2" (at 127.00 137.16 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "5d921d0f-41e7-475e-9d64-b2199bf5eea3"))
+  (label "+5V" (at 152.40 129.54 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "1f2d01ef-4716-4492-84b3-bc8c9e71ad91"))
+  (label "GND" (at 152.40 144.78 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "c2b0b044-3c90-4cad-96a6-ff2bd10f7345"))
+  (label "LED_DIN" (at 144.78 137.16 0) (effects (font (size 1.27 1.27)) (justify left bottom)) (uuid "b0ec5165-19b2-4e18-ad02-63d98998f42d"))
+  (no_connect (at 162.56 109.22) (uuid "d878c8b5-cc3a-4544-bd9a-d6b6414e0d29"))
+  (no_connect (at 198.12 109.22) (uuid "a7c634b9-c90f-46c9-9afd-24bd932dda3e"))
+  (no_connect (at 198.12 114.30) (uuid "a3ce389a-2d99-44ae-b3df-e7d9ff7824ed"))
+  (no_connect (at 198.12 116.84) (uuid "a8a68fba-748d-4ec4-8449-9a463eabfa2e"))
+  (no_connect (at 160.02 137.16) (uuid "7924b5ad-48b7-4078-bb78-65d97d370154"))
+  (sheet_instances
+    (path "/" (page "1"))
+  )
+)
