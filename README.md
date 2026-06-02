@@ -5,7 +5,11 @@
 [![ESPHome](https://img.shields.io/badge/ESPHome-firmware-blue.svg?logo=esphome)](https://esphome.io/)
 ![status](https://img.shields.io/badge/status-active-brightgreen)
 
-A baby care tracking system built on Home Assistant, n8n, PostgreSQL, and ESP32. Born out of a contraction tracker built for labor, evolved into a full newborn care dashboard once my son arrived plus a 3D-printed physical remote for those 3am diaper change logs.
+A baby care tracking system built on Home Assistant, n8n, PostgreSQL, and ESP32. Born out of a contraction tracker built for labor, evolved into a full newborn care dashboard once my son arrived plus a ~$10 3D-printed physical remote for those 3am diaper-change logs.
+
+<p align="center">
+  <img src="assets/dashboard.png" alt="Home Assistant baby tracker dashboard — summary stats and one-tap event buttons" width="340">
+</p>
 
 ## Features
 
@@ -25,7 +29,7 @@ When we got to the hospital, the Ring button was back home. So we added intensit
 
 My son was born the next day. The contraction tracker was retired the same day and replaced with a baby tracker covering feeds, diapers, sleep, baths, medicine, tummy time, weight, pumping, and notes.
 
-Matchin the same WAF style fro before, Now we're building a 3D-printed physical remote with labeled buttons
+Keeping the same low-friction (high-WAF) style, we then built a 3D-printed physical remote with labeled buttons so nobody has to unlock a phone to log a diaper change at 3am.
 
 ## Architecture
 
@@ -187,7 +191,8 @@ psql -d maestro_hub -f db/schema.sql
 #   baby-tracker/ha/configuration_snippets.yaml
 # Import the dashboard into HA storage (.storage/lovelace.<name>)
 #   baby-tracker/ha/dashboard.json
-# Create the HA scripts via API or UI (see memory docs for the full list)
+# Create the HA scripts referenced by the dashboard (rest_command + input_text,
+#   see baby-tracker/ha/configuration_snippets.yaml)
 ```
 
 ### 3. Flash the remote
