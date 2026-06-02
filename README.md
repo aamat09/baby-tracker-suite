@@ -100,20 +100,40 @@ Event types:
 
 Stats tracked: last feed time/type, last diaper time/type, feeds today, diapers today, sleep total today, baths/medicines/tummy times/pumps today.
 
+### Baby Tracker App — Home Assistant add-on (separate repo)
+
+A **single-container Home Assistant app** that bundles everything above with
+**no n8n and no external database**: an Ingress web UI (the colorful button
+dashboard), local SQLite storage, the same stats/journal, pump reminders, and
+native HA entities via MQTT discovery — and it still listens to the ESP32
+remote. It lives in its own installable repo:
+
+➡️ **[hms-homelab/hms-baby-tracker](https://github.com/hms-homelab/hms-baby-tracker)**
+(FastAPI + SQLite; add the repo URL under Settings → Add-ons/Apps → Repositories).
+
+The n8n + PostgreSQL path in this repo remains as the advanced/legacy backend;
+the app is the portable, one-click way to run the whole thing.
+
 ### Baby Remote (in progress)
 
 3D-printed physical remote control with ESP32-C3, 15 tactile buttons, RGB LED feedback, and LiPo battery.
 
 | File | Description |
 |------|-------------|
-| `baby-remote/scad/remote_case.scad` | OpenSCAD source: case, cover, button caps, LED window |
-| `baby-remote/scad/bottom_case.stl` | Bottom case (print face-down) |
-| `baby-remote/scad/top_cover.stl` | Top cover with button holes + engraved labels |
-| `baby-remote/scad/button_cap.stl` | Button cap (print 15x in matching colors) |
-| `baby-remote/scad/led_window.stl` | LED window (print 1x in clear filament) |
-| `baby-remote/esphome/baby_remote.yaml` | ESPHome firmware: buttons -> MQTT -> n8n |
+| `baby-remote/kicad/` | 2-layer PCB (DRC-clean, Freerouting-routed) — the manufactured board |
+| `baby-remote/kicad/fab/baby-remote-jlcpcb.zip` | Gerbers + drill, ready to upload to JLCPCB |
+| `baby-remote/scad/remote_case.scad` | OpenSCAD enclosure (PCB-carrier v1: tray + cover + plungers) |
+| `baby-remote/scad/bottom_case.stl` | PCB tray (print face-down) |
+| `baby-remote/scad/top_cover.stl` | Cover with hanging barrels + nub holes + labels |
+| `baby-remote/scad/button_plunger.stl` | Button plunger (print 15×) |
+| `baby-remote/scad/led_window.stl` | LED window (print 1× in clear filament) |
+| `baby-remote/esphome/baby_remote.yaml` | ESPHome firmware: matrix -> MQTT -> n8n / the app |
 
 See [Hardware](#hardware) for the button layout, matrix wiring, PCB, and BOM.
+
+> **🙋 Want one?** I'm only building a batch if there's real interest.
+> **[Reserve one / register interest →](baby-remote/RESERVE.md)**
+> *(takes 30s — qty, kit vs assembled, color set, what you'd pay)*
 
 ### Database
 
@@ -174,7 +194,25 @@ BOM (~$10):
 - **Ollama:** ollama.local:11434 (AI assessment, RTX 3050)
 - **ESPHome:** For ESP32 device firmware
 
-## Quick Start
+## Install as a Home Assistant App
+
+The fastest path — no n8n, no PostgreSQL, no manual scripts:
+
+1. **Settings → Add-ons → Add-on Store** (shown as **Apps** on HA 2026.2+) →
+   ⋮ → **Repositories** → add `https://github.com/hms-homelab/hms-baby-tracker`.
+2. Install **Baby Tracker**, then **Start** it.
+3. Open the **Web UI** (Ingress) — the button dashboard is right there.
+4. *(optional)* In the app's **Configuration** tab set `notify_targets`
+   (e.g. `mobile_app_your_phone`) to get press + pump-reminder notifications,
+   and adjust `timezone` / `pump_hours`.
+
+It auto-connects to the HA Mosquitto broker, so the **ESP32 remote keeps
+working** (publishes to `baby/remote/event`) and native HA sensors/buttons
+appear automatically via MQTT discovery. Data lives in the add-on's `/data`
+(SQLite). Full reference:
+[hms-baby-tracker DOCS](https://github.com/hms-homelab/hms-baby-tracker/blob/main/baby_tracker/DOCS.md).
+
+## Quick Start (advanced / legacy n8n backend)
 
 ### 1. Database
 

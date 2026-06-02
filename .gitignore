@@ -14,3 +14,5 @@ fp-info-cache
 *.lck
 ~*
 *.jar
+.pytest_cache/
+*.pyc
