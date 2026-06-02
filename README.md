@@ -131,10 +131,6 @@ the app is the portable, one-click way to run the whole thing.
 
 See [Hardware](#hardware) for the button layout, matrix wiring, PCB, and BOM.
 
-> **🙋 Want one?** I'm only building a batch if there's real interest.
-> **[Reserve one / register interest →](baby-remote/RESERVE.md)**
-> *(takes 30s — qty, kit vs assembled, color set, what you'd pay)*
-
 ### Database
 
 | File | Description |
