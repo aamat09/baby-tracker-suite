@@ -122,9 +122,8 @@ the app is the portable, one-click way to run the whole thing.
 |------|-------------|
 | `baby-remote/kicad/` | 2-layer PCB (DRC-clean, Freerouting-routed) — the manufactured board |
 | `baby-remote/kicad/fab/baby-remote-jlcpcb.zip` | Gerbers + drill, ready to upload to JLCPCB |
-| `baby-remote/scad/remote_case.scad` | OpenSCAD enclosure (PCB-carrier v1: tray + cover + plungers) |
-| `baby-remote/scad/bottom_case.stl` | PCB tray (print face-down) |
-| `baby-remote/scad/top_cover.stl` | Cover with hanging barrels + nub holes + labels |
+| `baby-remote/scad/baby-remote-pcb.scad` | OpenSCAD 3D-printed PCB substrate (grooved board = device back; bottom feet) |
+| `baby-remote/scad/baby-remote-pcb-case.scad` | OpenSCAD snap-fit cap (walls + ledge + barrels + labels); board snaps in |
 | `baby-remote/scad/button_plunger.stl` | Button plunger (print 15×) |
 | `baby-remote/scad/led_window.stl` | LED window (print 1× in clear filament) |
 | `baby-remote/esphome/baby_remote.yaml` | ESPHome firmware: matrix -> MQTT -> n8n / the app |

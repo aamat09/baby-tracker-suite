@@ -36,7 +36,7 @@ MQTT (`baby/remote/event`) for HA/n8n to log. WS2812 LED = press feedback.
   `gen_schematic.py` (schematic, writes `symbols.json` ref→UUID) →
   `pcbgen.py` (places footprints at the SCAD button grid: `btn_x=16.5+17c`,
   `btn_y=38.5+17r`, matrix nets, Edge.Cuts) → `route.py` (routing + GND pour).
-- Footprints placed at the **17 mm enclosure grid** (matches `scad/remote_case.scad`).
+- Footprints placed at the **17 mm enclosure grid** (matches `scad/baby-remote-pcb.scad` + `scad/baby-remote-pcb-case.scad`).
 - Validate: `kicad-cli sch erc` (4 benign module-power notes) and
   `kicad-cli pcb drc --schematic-parity` (parity = 0).
 - KiCad lock/report/backups are gitignored.

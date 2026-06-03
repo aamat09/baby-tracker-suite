@@ -31,19 +31,23 @@ the event's colour so you get tactile *and* visual confirmation.
 
 ## Print
 
-OpenSCAD source: [`scad/remote_case.scad`](scad/remote_case.scad). Exported STLs in `scad/`:
+Two-part **snap-fit** design (no separate tray). OpenSCAD sources + exported STLs
+in `scad/`:
 
-| File | Qty | Orientation |
-|------|-----|-------------|
-| `bottom_case.stl` | 1 | as-is (face down) |
-| `top_cover.stl` | 1 | face up (labels up) |
-| `button_plunger.stl` | **15** | nub up / skirt-opening down — no supports |
-| `led_window.stl` | 1 | clear/translucent filament |
+| Source | STL | Qty | Orientation |
+|--------|-----|-----|-------------|
+| [`baby-remote-pcb.scad`](scad/baby-remote-pcb.scad) | `baby-remote-pcb.stl` | 1 | grooves up (printed PCB substrate / device back) |
+| [`baby-remote-pcb-case.scad`](scad/baby-remote-pcb-case.scad) | `baby-remote-pcb-case.stl` | 1 | top-face down (barrels point up) |
+| — | `button_plunger.stl` | **15** | nub up / skirt-opening down — no supports |
+| — | `led_window.stl` | 1 | clear/translucent filament |
 
-The buttons are a **plunger-in-barrel** design: each plunger drops into a barrel
-molded into the case, rests on its tactile switch, and is captured by the cover —
-no glue, no snap-fit, won't fall out or spin. Tune `plunger_clear` / `hole_clear`
-in the SCAD if your printer runs tight/loose.
+The populated board **snaps up into the cap** from below: an internal ledge stops
+it (top face up) and snap ridges catch its bottom edge. The board *is* the back of
+the device — bottom feet lift the exposed wire side off the surface (a snap-on back
+cover is a v2). The buttons are a **plunger-in-barrel** design: each plunger drops
+into a barrel molded into the cap, rests on its tactile switch, and is captured by
+the cap — no glue, won't fall out or spin. Tune `plunger_clear` / `hole_clear` (and
+`pcb_clear` for the board fit) in the SCAD if your printer runs tight/loose.
 
 ## Wiring
 
