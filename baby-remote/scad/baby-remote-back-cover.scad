@@ -27,19 +27,22 @@ module back_cover(){
             // hollow out the inside above the floor (leaves floor + walls)
             translate([wall, wall, cover_in_z])
                 rbox(inner_w, inner_l, (board_bot-cover_in_z)+0.1, max(0.5,corner_r-wall));
-            // RIGHT-wall NOTCH POCKETS (the cap skirt barbs click into these)
-            for(yy=clamp_ys)
-                translate([case_w-notch_d, yy-(clamp_w+0.8)/2, barb_z-notch_h/2])
-                    cube([notch_d+0.1, clamp_w+0.8, notch_h]);
             // USB-C relief in the TOP wall (belt-and-braces; connector clears anyway)
             translate([usb_cx-usbc_w/2, -0.1, board_bot-1.0])
                 cube([usbc_w, wall+0.2, 1.2]);
+            // relieve the LEFT wall where the CAP's knuckles (even i) pass through
+            for(i=[0:hinge_n-1]) if(i%2==0) hinge_relief(i);
         }
 
         // standoff posts: push the board up to the cap ledge when closed
         for(p=post_xy)
             translate([px(p[0]), py(p[1]), cover_in_z])
                 cylinder(h=cover_wall_h, r=post_r, $fn=24);
+
+        // snap-fit RIDGE on the outer right wall (the cap tab's notch catches these)
+        for(yy=clamp_ys)
+            translate([case_w, yy - snap_w/2, snap_ridge_zc - snap_ridge_h/2])
+                cube([snap_protrusion, snap_w, snap_ridge_h]);
 
         // hinge knuckles — COVER half = ODD indices (cap takes the even ones)
         for(i=[0:hinge_n-1]) if(i%2==1) hinge_knuckle(i);

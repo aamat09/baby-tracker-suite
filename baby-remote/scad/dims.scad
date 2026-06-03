@@ -36,7 +36,7 @@ function px(x) = wall + pcb_clear + x;
 function py(y) = wall + pcb_clear + y;
 
 // USB-C opening (C3 dev-board port, overhangs the TOP short edge, y=0)
-usbc_w = 11; usbc_h = 5;
+usbc_w = 16; usbc_h = 9;   // sized to clear the cable's rubber overmold (was 11x5)
 usb_cx = px(c3_x);
 
 // ─── Back cover + cap-to-cover joint ──────────────────────
@@ -58,7 +58,7 @@ post_xy = [[4,5],[80,5],[4,53],[80,53],[4,101],[80,101]];
 
 // Filament-pin hinge on the LEFT edge (axis along Y at the seam z=board_bot).
 hinge_kn_r = 2.5;   // knuckle outer radius (protrudes -X beyond the wall)
-hinge_bore = 1.9;   // pin bore for a snipped 1.75 mm filament length
+hinge_bore = 2.2;   // pin bore for 1.75 mm filament — oversized for print shrinkage (was 1.9, too tight)
 hinge_n    = 5;     // knuckle count along the edge (even idx = CAP, odd = COVER)
 hinge_gap  = 0.5;   // axial play between adjacent knuckles
 hinge_z    = board_bot;                       // pin axis z (the cap/cover seam)
@@ -77,15 +77,28 @@ module hinge_knuckle(i){
         }
 }
 
-// Shallow snaps on the RIGHT edge: a SHORT cap skirt that sits FLUSH against the
-// cover's outer wall (a solid edge rib, no standoff gap), with a barb that clicks
-// into a NOTCH POCKET in the cover wall near the seam. Press a skirt out to release.
-clamp_w   = 8;     // engagement width (along Y)
-skirt_th  = 2.0;   // cap skirt thickness (X, outboard rib)
-skirt_len = 4.0;   // SHORT skirt drop below the seam (vs the full cover depth)
-skirt_clr = 0.2;   // skirt inner face clearance to the cover outer wall
-barb_d    = 1.4;   // barb reach inward (-X) into the cover notch
-barb_z    = board_bot - 1.6;   // barb/notch centre z (near the top of the wall)
-notch_d   = 1.7;   // notch pocket depth into the cover wall (< wall, stays closed)
-notch_h   = 2.6;   // notch pocket height
-clamp_ys  = [case_l*0.33, case_l*0.66];   // two snaps
+// Wall RELIEF slot for the OPPOSITE part's knuckle i — subtract from a part's
+// left wall so the interleaved knuckles don't collide with the other part's wall.
+// (Each part keeps solid wall at its OWN knuckle positions for attachment.)
+module hinge_relief(i){
+    y0 = hinge_y0(i) - hinge_gap;
+    y1 = hinge_y1(i) + hinge_gap;
+    translate([-0.5, y0, hinge_z - hinge_kn_r - 0.5])
+        cube([wall + 1.0, y1 - y0, 2*hinge_kn_r + 1.0]);
+}
+
+// Snap-fit ported from push-c3-enclosure-bareboards.scad (proven). The COVER
+// ("body") has a small RIDGE on its outer right wall; the CAP ("lid") has a
+// TAPERED TAB (thick root → thin tip) hanging OUTSIDE that wall with a NOTCH that
+// captures the ridge. The tab flexes OUTWARD into open air (no rubbing); the taper
+// keeps it stiff at the notch but flexible at the tip; an ANCHOR block ties the tab
+// solidly into the cap wall (volumetric, not a 2D seam). Press the tab out to open.
+snap_w              = 12;    // width along the edge (Y)
+snap_protrusion     = 0.7;   // cover ridge depth (+X) — the grip
+snap_ridge_h        = 1.0;   // ridge height (Z)
+snap_tab_thick_root = 2.5;   // cap tab thickness (X) at the root (stiff, where it grips)
+snap_tab_thick_tip  = 1.5;   // cap tab thickness (X) at the tip (flexes to snap on)
+snap_tab_drop       = 7;     // tab length below the seam
+snap_notch_h        = 2.0;   // notch height (Z, > ridge for tolerance)
+snap_ridge_zc       = board_bot - 2.5;   // ridge centre z (below seam, upper/thicker tab region)
+clamp_ys            = [case_l*0.30, case_l*0.70];   // two snaps

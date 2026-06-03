@@ -2,20 +2,15 @@
 # Firmware for the 3D-printed physical remote.
 #
 # 15 buttons on a 4x4 scan matrix (no diodes — single-press logging):
-# ⚠️ PROTOTYPE-ONLY PIN REMAP — this hand-soldered 3D-printed board has ROW0/ROW1
-# wired to GPIO21/GPIO20 (the C3 UART0 pins) instead of GPIO0/GPIO1. They were
-# soldered to the wrong header holes and remapped here rather than reworked. 20/21
-# are free on the native-USB SuperMini (not strapping); logger is pinned to
-# USB_SERIAL_JTAG below so it doesn't fight the matrix for UART0.
-#
-# The fabricated KiCad PCBs (in transit) route rows correctly to GPIO0/GPIO1 — as
-# the back-engraving / KiCad / SCAD all show. WHEN FLASHING A REAL PCB, change the
-# first two row pins below back to GPIO0 / GPIO1 (and the logger line can revert).
-#   Rows (this prototype):  GPIO21, GPIO20, GPIO3, GPIO4
-#   Rows (fabbed PCB):       GPIO0,  GPIO1,  GPIO3, GPIO4
-#   Cols (both):             GPIO5,  GPIO6,  GPIO7, GPIO10   (internal pullups)
+#   Rows (drive):  GPIO0, GPIO1, GPIO3, GPIO4   ← ACTIVE; matches the fabricated
+#                  JLCPCB PCB, the back-engraving, KiCad and SCAD.
+#   Cols (sense):  GPIO5, GPIO6, GPIO7, GPIO10  (internal pullups)
 #   WS2812B LED:   GPIO8
 # The 16th position (row 3, col 3) is the LED window — no switch.
+#
+# NOTE — the one HAND-SOLDERED prototype board has ROW0/ROW1 mis-wired to
+# GPIO21/GPIO20 (C3 UART0 pins). To flash THAT board only, change the first two
+# row pins below to GPIO21 / GPIO20. All fabbed PCBs use GPIO0/GPIO1 (active here).
 #
 # Each press publishes MQTT to trigger the n8n baby-event webhook; the RGB
 # LED flashes the button's colour as confirmation.
@@ -25,7 +20,7 @@ esphome:
   friendly_name: "Baby Remote"
   project:
     name: "smarthomemaestro.baby_remote"
-    version: "2026.1.0"
+    version: "2026.1.1"
 
 esp32:
   board: esp32-c3-devkitm-1
@@ -51,7 +46,7 @@ mqtt:
 
 logger:
   level: WARN
-  hardware_uart: USB_SERIAL_JTAG   # rows steal UART0 (GPIO20/21); log over native USB
+  hardware_uart: USB_SERIAL_JTAG   # log over the C3 native USB (also keeps clear of UART0 if the prototype's 20/21 rows are used)
 
 # RGB LED for button press feedback (WS2812B on GPIO8).
 # esp32_rmt_led_strip = the esp-idf-native WS2812 driver (neopixelbus is arduino-only).
@@ -71,8 +66,8 @@ light:
 matrix_keypad:
   id: keypad
   rows:
-    - pin: GPIO21   # ROW0 — prototype hand-wire; fabbed PCB = GPIO0 (see header note)
-    - pin: GPIO20   # ROW1 — prototype hand-wire; fabbed PCB = GPIO1
+    - pin: GPIO0    # ROW0 — fabbed PCB (hand-wired prototype = GPIO21; see header)
+    - pin: GPIO1    # ROW1 — fabbed PCB (hand-wired prototype = GPIO20)
     - pin: GPIO3    # ROW2
     - pin: GPIO4    # ROW3
   columns:
