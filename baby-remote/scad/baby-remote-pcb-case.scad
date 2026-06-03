@@ -1,11 +1,14 @@
 // Baby Remote — SNAP-FIT CAP for the 3D-printed substrate (baby-remote-pcb.scad)
-// TWO-part design (board + cap), for the 84 x 106 mm printed board:
+// THREE-part design (board + cap + back cover), for the 84 x 106 mm printed board:
 //   - The populated board snaps UP into this cap from below.
 //   - The cap carries the walls, the hanging barrels, the plungers and labels.
 //   - An internal LEDGE stops the board (top face up); SNAP RIDGES on the inner
 //     walls catch the board's bottom edge and hold it against the ledge.
-//   - The board IS the back of the device: its feet lift the exposed wire side
-//     off the surface (a snap-on back cover is a v2).
+//   - BACK COVER (baby-remote-back-cover.scad) closes the wire side: joined by a
+//     FILAMENT-PIN HINGE on the LEFT edge (interleaved knuckles, shared via
+//     dims.scad) and SHORT SNAP CLAMPS on the RIGHT edge (cover_clamp skirts that
+//     click under detent bumps near the seam). Cover posts push the board up to
+//     the ledge when closed.
 //   - USB-C notch in the top wall at the C3 port (board x = 66, top edge).
 // Barrel/plunger/label geometry is the proven plunger-in-barrel design (carried
 // over from the retired 3-part tray+cover); only the perimeter is new (walls +
@@ -14,8 +17,8 @@
 // ─── Board it wraps (shared via dims.scad) ────────────────
 include <dims.scad>   // board_w/board_h/board_t, cx()/cy()/is_led(), c3_x — shared with the board
 
-// ─── Fit / case ───────────────────────────────────────────
-pcb_clear=0.4; wall=2.0; corner_r=4; top_thick=2.0;
+// ─── Fit / case (pcb_clear/wall/corner_r/case_*/px/py now in dims.scad) ───
+top_thick=2.0;
 ledge_w=1.2;          // perimeter shelf the board TOP rests against
 sw_h=5;               // switch body height above the board top
 cap_t=1.6;            // plunger cup-top (lands on the switch)
@@ -28,27 +31,16 @@ barrel_out=barrel_in+2*barrel_wall;
 skirt_len=1.0; skirt_play=0.4; nub_proud=1.5; hole_clear=0.6;
 cover_hole=skirt_out-2.0; nub_size=cover_hole-hole_clear;
 
-// USB-C opening (C3 dev-board port)
-usbc_w=11; usbc_h=5;
+// USB-C opening (usbc_w/usbc_h now in dims.scad)
 
-// ─── z stack: z = 0 at the BOARD TOP face ─────────────────
+// ─── z stack: z = 0 at the BOARD TOP face (board_bot now in dims.scad) ──
 plate_under = sw_h + cap_t;             // 6.6  cap plate underside
 plate_top   = plate_under + top_thick;  // 8.6  cap outer top
-board_bot   = -board_t;                 // -2.0 board back plane
 barrel_len  = plate_under - 0.4;        // 6.2  barrels hang to ~board top
 
-// ─── Footprint ────────────────────────────────────────────
-inner_w = board_w + 2*pcb_clear;        // 84.8
-inner_l = board_h + 2*pcb_clear;        // 106.8
-case_w  = inner_w + 2*wall;             // 88.8
-case_l  = inner_l + 2*wall;             // 110.8
-
-// board-local -> case coords
-function px(x)=wall+pcb_clear+x;
-function py(y)=wall+pcb_clear+y;
+// ─── Footprint (case_w/case_l, inner_*, px/py, usb_cx now in dims.scad) ──
 function btnx(c)=px(cx(c));
 function btny(r)=py(cy(r));
-usb_cx=px(c3_x);
 
 rows_n=4; cols_n=4;
 labels=["Breast","Bottle","Solid","Sleep","Pump L","Pump R","Bath","Meds",
@@ -86,6 +78,29 @@ module led_window(){ cylinder(d=9.5,h=top_thick-0.2,$fn=24); }
 // half-round snap ridge (catches the board bottom edge; top at board_bot)
 module snap_ridge_x(len=8){ translate([0,0,board_bot-0.9]) rotate([0,90,0]) cylinder(h=len,r=0.9,center=true,$fn=20); }
 module snap_ridge_y(len=8){ translate([0,0,board_bot-0.9]) rotate([90,0,0]) cylinder(h=len,r=0.9,center=true,$fn=20); }
+
+// Cover snap clamp (RIGHT edge): a SHORT cap skirt, outboard of the cover's right
+// wall, whose lip clicks UNDER a detent bump on the cover wall (engages near the
+// seam, not the full depth). Bonding bridge ties it to the cap wall; ramp on the
+// lip underside cams it out as the cover seats. Press the skirt out to release.
+module cover_clamp(yy){
+    xi = case_w + skirt_clr;            // skirt inner face, flush against the cover wall
+    zt = board_bot;                     // seam (top)
+    zb = board_bot - skirt_len;         // skirt bottom (short)
+    translate([0, yy-clamp_w/2, 0]){
+        // bridge: bond the skirt to the cap wall above the seam (overlaps the
+        // FULL wall thickness so the skirt is solidly attached, not a sliver join)
+        translate([case_w-wall, 0, zt]) cube([(xi+skirt_th)-(case_w-wall), clamp_w, 2.5]);
+        // short flush skirt — a solid rib down the right edge (no standoff gap)
+        translate([xi, 0, zb]) cube([skirt_th, clamp_w, zt-zb]);
+        // barb: protrudes inward (-X) into the cover notch; flat catch up, ramp below
+        hull(){
+            translate([xi,        0, barb_z+0.7]) cube([0.01, clamp_w, 0.01]); // catch outer (skirt face)
+            translate([xi-barb_d, 0, barb_z+0.7]) cube([0.01, clamp_w, 0.01]); // catch tip (in notch)
+            translate([xi,        0, barb_z-0.9]) cube([0.01, clamp_w, 0.01]); // ramp bottom
+        }
+    }
+}
 
 // ─── Cap ──────────────────────────────────────────────────
 module cap(){
@@ -129,6 +144,12 @@ module cap(){
         }
         translate([case_w*0.5, wall, 0])         snap_ridge_x();  // top wall
         translate([case_w*0.5, case_l-wall, 0])  snap_ridge_x();  // bottom wall
+
+        // ── back-cover joint ──
+        // hinge knuckles on the LEFT edge — CAP half = EVEN indices (cover = odd)
+        for(i=[0:hinge_n-1]) if(i%2==0) hinge_knuckle(i);
+        // snap clamps on the RIGHT edge (short skirts, click under cover bumps)
+        for(yy=clamp_ys) cover_clamp(yy);
     }
 }
 

@@ -16,9 +16,6 @@ include <dims.scad>   // board_w/board_h/board_t, cx()/cy()/is_led(), c3_x — s
 
 groove_d=0.8; row_w=1.5; col_w=1.5; leg_d=1.6; pad_d=1.6;  // leg/pin/pad holes all 1.6 (snug for wires)
 
-// Back stand-off (v1 = exposed back; snap-on back cover = v2)
-foot_h=1.2; foot_r=2.5;  // bottom feet lift the wire-grooved back off the surface
-
 legdx=3.25; legdy=2.25;
 
 // C3 SuperMini — top-RIGHT of the bay. Long axis vertical so the USB-C short
@@ -61,8 +58,6 @@ module blabel(x,y,s,sz=1.4){
     translate([x,y,-0.01]) mirror([1,0,0])
         linear_extrude(0.4) text(s,size=sz,halign="center",valign="center",font="Liberation Mono");
 }
-// bottom stand-off foot (lifts the grooved back off the surface)
-module foot(x,y){ translate([x,y,-foot_h]) cylinder(h=foot_h+0.01, r=foot_r, $fn=24); }
 
 difference(){
     cube([board_w,board_h,board_t]);
@@ -116,10 +111,6 @@ difference(){
     blabel(cx(3),     cy(3)-3, "5V");
     blabel(cx(3)+2.5, cy(3)-3, "GND");
 }
-
-// ===== bottom feet: raise the wire-grooved back off the surface =====
-// placed in groove-free zones (corners + long-edge mids, clear of lanes/pocket)
-for(p=[[4,5],[80,5],[4,53],[80,53],[4,101],[80,101]]) foot(p[0],p[1]);
 
 // silk function labels (top)
 LBL=[["Breast","Bottle","Solid","Sleep"],["PumpL","PumpR","Bath","Meds"],
