@@ -2,8 +2,18 @@
 # Firmware for the 3D-printed physical remote.
 #
 # 15 buttons on a 4x4 scan matrix (no diodes — single-press logging):
-#   Rows (drive):  GPIO0, GPIO1, GPIO3, GPIO4
-#   Cols (sense):  GPIO5, GPIO6, GPIO7, GPIO10   (internal pullups)
+# ⚠️ PROTOTYPE-ONLY PIN REMAP — this hand-soldered 3D-printed board has ROW0/ROW1
+# wired to GPIO21/GPIO20 (the C3 UART0 pins) instead of GPIO0/GPIO1. They were
+# soldered to the wrong header holes and remapped here rather than reworked. 20/21
+# are free on the native-USB SuperMini (not strapping); logger is pinned to
+# USB_SERIAL_JTAG below so it doesn't fight the matrix for UART0.
+#
+# The fabricated KiCad PCBs (in transit) route rows correctly to GPIO0/GPIO1 — as
+# the back-engraving / KiCad / SCAD all show. WHEN FLASHING A REAL PCB, change the
+# first two row pins below back to GPIO0 / GPIO1 (and the logger line can revert).
+#   Rows (this prototype):  GPIO21, GPIO20, GPIO3, GPIO4
+#   Rows (fabbed PCB):       GPIO0,  GPIO1,  GPIO3, GPIO4
+#   Cols (both):             GPIO5,  GPIO6,  GPIO7, GPIO10   (internal pullups)
 #   WS2812B LED:   GPIO8
 # The 16th position (row 3, col 3) is the LED window — no switch.
 #
@@ -27,6 +37,10 @@ wifi:
   password: !secret wifi_password
   fast_connect: true
   power_save_mode: HIGH
+  # SuperMini/C3 PCB-antenna overdrive: at full 20dBm the cheap chip antenna
+  # distorts and association fails (auth->init loop). Cap TX power. cpapdash-push-c3
+  # uses esp_wifi_set_max_tx_power(44)≈11dBm for the same reason; 8.5dB is safe here.
+  output_power: 8.5dB
 
 mqtt:
   broker: !secret mqtt_broker
@@ -37,13 +51,15 @@ mqtt:
 
 logger:
   level: WARN
+  hardware_uart: USB_SERIAL_JTAG   # rows steal UART0 (GPIO20/21); log over native USB
 
-# RGB LED for button press feedback (WS2812B on GPIO8)
+# RGB LED for button press feedback (WS2812B on GPIO8).
+# esp32_rmt_led_strip = the esp-idf-native WS2812 driver (neopixelbus is arduino-only).
 light:
-  - platform: neopixelbus
+  - platform: esp32_rmt_led_strip
     id: status_led
-    type: GRB
-    variant: WS2812
+    rgb_order: GRB
+    chipset: WS2812
     pin: GPIO8
     num_leds: 1
     name: "Status LED"
@@ -55,10 +71,10 @@ light:
 matrix_keypad:
   id: keypad
   rows:
-    - pin: GPIO0
-    - pin: GPIO1
-    - pin: GPIO3
-    - pin: GPIO4
+    - pin: GPIO21   # ROW0 — prototype hand-wire; fabbed PCB = GPIO0 (see header note)
+    - pin: GPIO20   # ROW1 — prototype hand-wire; fabbed PCB = GPIO1
+    - pin: GPIO3    # ROW2
+    - pin: GPIO4    # ROW3
   columns:
     - pin: GPIO5
     - pin: GPIO6
