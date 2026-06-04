@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="88.8mm" height="132.8mm" viewBox="0 0 88.8 132.8">
+<rect x="0" y="0" width="100%" height="100%" fill="white"/>
+<g stroke="#000" fill="none" stroke-width="0.2">
+<rect x="0" y="0" width="88.8" height="110.8" rx="4.0" ry="4.0"/>
+<rect x="60.40" y="107.80" width="16.0" height="3.2" stroke="#888"/>
+<rect x="15.00" y="66.00" width="7.8" height="7.8" rx="1.3" ry="1.3" stroke="#bbb" stroke-dasharray="0.6 0.6"/>
+<line x1="17.40" y1="69.90" x2="20.40" y2="69.90" stroke="#ddd"/>
+<line x1="18.90" y1="68.40" x2="18.90" y2="71.40" stroke="#ddd"/>
+<rect x="32.00" y="66.00" width="7.8" height="7.8" rx="1.3" ry="1.3" stroke="#bbb" stroke-dasharray="0.6 0.6"/>
+<line x1="34.40" y1="69.90" x2="37.40" y2="69.90" stroke="#ddd"/>
+<line x1="35.90" y1="68.40" x2="35.90" y2="71.40" stroke="#ddd"/>
+<rect x="49.00" y="66.00" width="7.8" height="7.8" rx="1.3" ry="1.3" stroke="#bbb" stroke-dasharray="0.6 0.6"/>
+<line x1="51.40" y1="69.90" x2="54.40" y2="69.90" stroke="#ddd"/>
+<line x1="52.90" y1="68.40" x2="52.90" y2="71.40" stroke="#ddd"/>
+<rect x="66.00" y="66.00" width="7.8" height="7.8" rx="1.3" ry="1.3" stroke="#bbb" stroke-dasharray="0.6 0.6"/>
+<line x1="68.40" y1="69.90" x2="71.40" y2="69.90" stroke="#ddd"/>
+<line x1="69.90" y1="68.40" x2="69.90" y2="71.40" stroke="#ddd"/>
+<rect x="15.00" y="49.00" width="7.8" height="7.8" rx="1.3" ry="1.3" stroke="#bbb" stroke-dasharray="0.6 0.6"/>
+<line x1="17.40" y1="52.90" x2="20.40" y2="52.90" stroke="#ddd"/>
+<line x1="18.90" y1="51.40" x2="18.90" y2="54.40" stroke="#ddd"/>
+<rect x="32.00" y="49.00" width="7.8" height="7.8" rx="1.3" ry="1.3" stroke="#bbb" stroke-dasharray="0.6 0.6"/>
+<line x1="34.40" y1="52.90" x2="37.40" y2="52.90" stroke="#ddd"/>
+<line x1="35.90" y1="51.40" x2="35.90" y2="54.40" stroke="#ddd"/>
+<rect x="49.00" y="49.00" width="7.8" height="7.8" rx="1.3" ry="1.3" stroke="#bbb" stroke-dasharray="0.6 0.6"/>
+<line x1="51.40" y1="52.90" x2="54.40" y2="52.90" stroke="#ddd"/>
+<line x1="52.90" y1="51.40" x2="52.90" y2="54.40" stroke="#ddd"/>
+<rect x="66.00" y="49.00" width="7.8" height="7.8" rx="1.3" ry="1.3" stroke="#bbb" stroke-dasharray="0.6 0.6"/>
+<line x1="68.40" y1="52.90" x2="71.40" y2="52.90" stroke="#ddd"/>
+<line x1="69.90" y1="51.40" x2="69.90" y2="54.40" stroke="#ddd"/>
+<rect x="15.00" y="32.00" width="7.8" height="7.8" rx="1.3" ry="1.3" stroke="#bbb" stroke-dasharray="0.6 0.6"/>
+<line x1="17.40" y1="35.90" x2="20.40" y2="35.90" stroke="#ddd"/>
+<line x1="18.90" y1="34.40" x2="18.90" y2="37.40" stroke="#ddd"/>
+<rect x="32.00" y="32.00" width="7.8" height="7.8" rx="1.3" ry="1.3" stroke="#bbb" stroke-dasharray="0.6 0.6"/>
+<line x1="34.40" y1="35.90" x2="37.40" y2="35.90" stroke="#ddd"/>
+<line x1="35.90" y1="34.40" x2="35.90" y2="37.40" stroke="#ddd"/>
+<rect x="49.00" y="32.00" width="7.8" height="7.8" rx="1.3" ry="1.3" stroke="#bbb" stroke-dasharray="0.6 0.6"/>
+<line x1="51.40" y1="35.90" x2="54.40" y2="35.90" stroke="#ddd"/>
+<line x1="52.90" y1="34.40" x2="52.90" y2="37.40" stroke="#ddd"/>
+<rect x="66.00" y="32.00" width="7.8" height="7.8" rx="1.3" ry="1.3" stroke="#bbb" stroke-dasharray="0.6 0.6"/>
+<line x1="68.40" y1="35.90" x2="71.40" y2="35.90" stroke="#ddd"/>
+<line x1="69.90" y1="34.40" x2="69.90" y2="37.40" stroke="#ddd"/>
+<rect x="15.00" y="15.00" width="7.8" height="7.8" rx="1.3" ry="1.3" stroke="#bbb" stroke-dasharray="0.6 0.6"/>
+<line x1="17.40" y1="18.90" x2="20.40" y2="18.90" stroke="#ddd"/>
+<line x1="18.90" y1="17.40" x2="18.90" y2="20.40" stroke="#ddd"/>
+<rect x="32.00" y="15.00" width="7.8" height="7.8" rx="1.3" ry="1.3" stroke="#bbb" stroke-dasharray="0.6 0.6"/>
+<line x1="34.40" y1="18.90" x2="37.40" y2="18.90" stroke="#ddd"/>
+<line x1="35.90" y1="17.40" x2="35.90" y2="20.40" stroke="#ddd"/>
+<rect x="49.00" y="15.00" width="7.8" height="7.8" rx="1.3" ry="1.3" stroke="#bbb" stroke-dasharray="0.6 0.6"/>
+<line x1="51.40" y1="18.90" x2="54.40" y2="18.90" stroke="#ddd"/>
+<line x1="52.90" y1="17.40" x2="52.90" y2="20.40" stroke="#ddd"/>
+<circle cx="69.90" cy="18.90" r="5.0" stroke="#888" stroke-dasharray="0.8 0.8"/>
+<line x1="68.40" y1="18.90" x2="71.40" y2="18.90" stroke="#ddd"/>
+<line x1="69.90" y1="17.40" x2="69.90" y2="20.40" stroke="#ddd"/>
+</g>
+<g fill="#000" font-family="Arial Rounded MT Bold, Arial, sans-serif" font-size="3.2" font-weight="bold" text-anchor="middle">
+<text x="18.90" y="78.40" dominant-baseline="middle">Breast</text>
+<text x="35.90" y="78.40" dominant-baseline="middle">Bottle</text>
+<text x="52.90" y="78.40" dominant-baseline="middle">Solid</text>
+<text x="69.90" y="78.40" dominant-baseline="middle">Sleep</text>
+<text x="18.90" y="61.40" dominant-baseline="middle">Pump L</text>
+<text x="35.90" y="61.40" dominant-baseline="middle">Pump R</text>
+<text x="52.90" y="61.40" dominant-baseline="middle">Bath</text>
+<text x="69.90" y="61.40" dominant-baseline="middle">Meds</text>
+<text x="18.90" y="44.40" dominant-baseline="middle">Pee</text>
+<text x="35.90" y="44.40" dominant-baseline="middle">Poop</text>
+<text x="52.90" y="44.40" dominant-baseline="middle">Both</text>
+<text x="69.90" y="44.40" dominant-baseline="middle">Change</text>
+<text x="18.90" y="27.40" dominant-baseline="middle">Tummy</text>
+<text x="35.90" y="27.40" dominant-baseline="middle">Weight</text>
+<text x="52.90" y="27.40" dominant-baseline="middle">Note</text>
+</g>
+<g fill="none" stroke="#000" stroke-width="0.45" stroke-linecap="round" stroke-linejoin="round">
+<circle cx="11.5" cy="94.8" r="6.5" fill="#fff"/>
+<circle cx="5.0" cy="94.8" r="1.69"/>
+<circle cx="18.0" cy="94.8" r="1.69"/>
+<path d="M 10.10 88.60 q 1.4 -2.4 2.9 -0.7"/>
+<circle cx="9.16" cy="94.28" r="0.75" fill="#000"/>
+<circle cx="13.84" cy="94.28" r="0.75" fill="#000"/>
+<path d="M 8.77 96.88 q 2.73 3.25 5.46 0"/>
+</g>
+<text x="53.4" y="97.2" font-family="Arial Rounded MT Bold, Arial, sans-serif" font-size="7" font-weight="bold" text-anchor="middle" fill="#000">Baby Tracker</text>
+<g font-family="Arial, sans-serif" font-size="3" fill="#000">
+<text x="2" y="115.8">USB at bottom · LED top-right · PRINT AT 100% (actual size, no scaling)</text>
+<line x1="2" y1="122.8" x2="52" y2="122.8" stroke="#000" stroke-width="0.3"/>
+<line x1="2" y1="121.3" x2="2" y2="124.3" stroke="#000" stroke-width="0.3"/>
+<line x1="52" y1="121.3" x2="52" y2="124.3" stroke="#000" stroke-width="0.3"/>
+<text x="54" y="123.8" font-size="2.6">50 mm (measure to verify scale)</text>
+</g>
+</svg>

@@ -111,12 +111,23 @@ remote. It lives in its own installable repo:
 ➡️ **[hms-homelab/hms-baby-tracker](https://github.com/hms-homelab/hms-baby-tracker)**
 (FastAPI + SQLite; add the repo URL under Settings → Add-ons/Apps → Repositories).
 
+<p align="center">
+  <img src="assets/addon/ingress-ui.png" alt="Baby Tracker add-on Ingress web UI — summary stats, color-coded button grid, notes and journal" width="48%">
+  <img src="assets/addon/addon-info.png" alt="Baby Tracker add-on running in Home Assistant — Info page with Ingress, start-on-boot and resource usage" width="48%">
+</p>
+<p align="center"><em>The add-on's Ingress web UI (left) and its Home Assistant app page (right) — runs as a native HA add-on, no n8n or external DB.</em></p>
+
 The n8n + PostgreSQL path in this repo remains as the advanced/legacy backend;
 the app is the portable, one-click way to run the whole thing.
 
 ### Baby Remote (in progress)
 
 3D-printed physical remote control with ESP32-C3, 15 tactile buttons, RGB LED feedback, and LiPo battery.
+
+<p align="center">
+  <img src="baby-remote/device.png" alt="Assembled baby remote — printed snap-fit cap with a print-at-100% sticky-label faceplate over the 15 buttons" width="300">
+</p>
+<p align="center"><em>Assembled unit with the sticky-label faceplate (generated 1:1 from <code>baby-remote/labels/</code>).</em></p>
 
 | File | Description |
 |------|-------------|

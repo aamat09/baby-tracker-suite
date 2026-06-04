@@ -14,12 +14,20 @@
 
 include <dims.scad>
 
+// ─── hinge pin-hole (tweak HERE, re-render just this part) ─
+// Bore for the 1.75 mm filament pin. Proven value on cpapdash-push-c3 is 1.95.
+// NOTE: this bore prints along Y = HORIZONTAL, so it bridges/sags; if the printed
+// hole is too tight, ream with a 2 mm drill or switch to a teardrop bore — just
+// raising this number barely helps once sag dominates.
+hinge_bore = 2.0;
+
 // ─── helpers ──────────────────────────────────────────────
 module rbox(w,l,h,r){ hull() for(x=[r,w-r],y=[r,l-r]) translate([x,y,0]) cylinder(h=h,r=r,$fn=32); }
 // hinge_knuckle(i) is shared from dims.scad; cover renders the ODD indices.
 
 // ─── back cover body ──────────────────────────────────────
 module back_cover(){
+  difference(){
     union(){
         difference(){
             // outer block: floor + perimeter walls (cover_bot_z up to board_bot)
@@ -47,6 +55,9 @@ module back_cover(){
         // hinge knuckles — COVER half = ODD indices (cap takes the even ones)
         for(i=[0:hinge_n-1]) if(i%2==1) hinge_knuckle(i);
     }
+    // clear the pin hole through the wall (knuckle bore alone gets plugged)
+    hinge_pin_channel();
+  }
 }
 
 // ─── render (this file = the back cover by itself, ready to export) ──

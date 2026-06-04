@@ -18,18 +18,37 @@
 // ─── Board it wraps (shared via dims.scad) ────────────────
 include <dims.scad>   // board_w/board_h/board_t, cx()/cy()/is_led(), c3_x — shared with the board
 
+// ─── hinge pin-hole (tweak HERE, re-render just this part) ─
+// Bore for the 1.75 mm filament pin. Proven value on cpapdash-push-c3 is 1.95.
+// NOTE: this bore prints along Y = HORIZONTAL, so it bridges/sags; if the printed
+// hole is too tight, ream with a 2 mm drill or switch to a teardrop bore — just
+// raising this number barely helps once sag dominates.
+hinge_bore = 2.0;
+
 // ─── Fit / case (pcb_clear/wall/corner_r/case_*/px/py now in dims.scad) ───
 top_thick=2.0;
 ledge_w=1.2;          // perimeter shelf the board TOP rests against
 sw_h=5;               // switch body height above the board top
 cap_t=1.6;            // plunger cup-top (lands on the switch)
 
+// ─── button labels (ENGRAVED) ────────────────────────────
+// Letters are CUT INTO the top face (raised/embossed text was too mushy at this
+// size). Strokes are widened a touch (label_widen) so the grooves read well
+// without the glyphs creeping down into the button hole below.
+label_depth = 0.5;    // how deep the letters cut into the top face (mm)
+label_size  = 3.0;    // glyph size (mm)
+label_widen = 0.15;   // offset() that fattens each stroke / groove per side (mm)
+label_font  = "Arial Rounded MT Bold";   // friendly + prints clean; alts below
+// alternatives (installed): "Avenir Next:style=Demi Bold", "Arial:style=Bold",
+//   "Arial Narrow:style=Bold" (fits long words), "Arial Black"
+label_dy    = 4.5;    // label offset above the button centre (Y)
+
 // ─── Barrel + plunger (proven plunger-in-barrel geometry) ─
 btn_r=1.5; sw_size=6;
 skirt_in=sw_size+1.0; skirt_wall=1.4; skirt_out=skirt_in+2*skirt_wall;
 plunger_clear=0.4; barrel_in=skirt_out+plunger_clear; barrel_wall=1.4;
 barrel_out=barrel_in+2*barrel_wall;
-skirt_len=1.0; skirt_play=0.4; nub_proud=1.5; hole_clear=0.5;  // 0.6→0.5: nub 0.1 larger, less wobble in the plate hole
+skirt_len=1.0; skirt_play=0.4; nub_proud=2.5; hole_clear=0.5;  // nub_proud: how far the button stands above the face (was 1.5). 0.6→0.5: nub 0.1 larger, less wobble in the plate hole
 cover_hole=skirt_out-2.0; nub_size=cover_hole-hole_clear;
 
 // USB-C opening (usbc_w/usbc_h now in dims.scad)
@@ -106,6 +125,7 @@ module cover_clamp(yy){
 
 // ─── Cap ──────────────────────────────────────────────────
 module cap(){
+  difference(){
     union(){
         difference(){
             union(){
@@ -125,12 +145,7 @@ module cap(){
                     rbox_c(cover_hole,cover_hole, top_thick+0.2, btn_r);
             // LED window
             translate([btnx(3),btny(3),plate_under-0.1]) cylinder(d=10,h=top_thick+0.2,$fn=24);
-            // engraved labels (0.4 mm into the top face)
-            for(r=[0:rows_n-1],c=[0:cols_n-1]){ li=r*cols_n+c;
-                if(!is_led(r,c) && li<len(labels))
-                    translate([btnx(c),btny(r)+4.5,plate_top-0.4]) linear_extrude(0.5)
-                        text(labels[li],size=3,halign="center",valign="bottom",font="Liberation Sans:style=Bold");
-            }
+            // (labels are ENGRAVED — cut in the outer difference below)
             // USB-C notch in the TOP wall (y-min edge) at the C3 port. Anchored at
             // board_bot and capped below the top plate so the taller (boot-clearing)
             // opening doesn't breach the top face.
@@ -150,6 +165,16 @@ module cap(){
         // snap clamps on the RIGHT edge (short skirts, click under cover bumps)
         for(yy=clamp_ys) cover_clamp(yy);
     }
+    // clear the pin hole through the wall (knuckle bore alone gets plugged)
+    hinge_pin_channel();
+    // ENGRAVED labels — cut into the top face; strokes widened via offset()
+    for(r=[0:rows_n-1],c=[0:cols_n-1]){ li=r*cols_n+c;
+        if(!is_led(r,c) && li<len(labels))
+            translate([btnx(c),btny(r)+label_dy,plate_top-label_depth]) linear_extrude(label_depth+0.1)
+                offset(delta=label_widen)
+                    text(labels[li],size=label_size,halign="center",valign="bottom",font=label_font);
+    }
+  }
 }
 
 // ─── PCB stand-in (visual only) ───────────────────────────

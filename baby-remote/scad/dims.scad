@@ -58,7 +58,9 @@ post_xy = [[4,5],[80,5],[4,53],[80,53],[4,101],[80,101]];
 
 // Filament-pin hinge on the LEFT edge (axis along Y at the seam z=board_bot).
 hinge_kn_r = 2.5;   // knuckle outer radius (protrudes -X beyond the wall)
-hinge_bore = 2.2;   // pin bore for 1.75 mm filament — oversized for print shrinkage (was 1.9, too tight)
+// hinge_bore is NOT defined here anymore — each part sets its own at the top of
+// its file so you can tweak the pin-hole fit and re-render JUST that part:
+//   baby-remote-pcb-case.scad (cap) + baby-remote-back-cover.scad (cover).
 hinge_n    = 5;     // knuckle count along the edge (even idx = CAP, odd = COVER)
 hinge_gap  = 0.5;   // axial play between adjacent knuckles
 hinge_z    = board_bot;                       // pin axis z (the cap/cover seam)
@@ -75,6 +77,17 @@ module hinge_knuckle(i){
             cylinder(h=y1-y0, r=hinge_kn_r, $fn=32);
             translate([0,0,-0.1]) cylinder(h=y1-y0+0.2, r=hinge_bore/2, $fn=20);
         }
+}
+
+// Continuous filament-pin channel along the WHOLE seam. Each part must subtract
+// this AFTER unioning its walls + knuckles. WHY: hinge_knuckle() bores only the
+// knuckle cylinder, but each knuckle is then unioned onto the SOLID perimeter
+// wall (relieved only at the OPPOSITE part's knuckles), so the wall fills the
+// bore back in and the pin can't pass. Cutting this channel clears the wall so
+// the hole is a clean through-bore. Uses each part's own hinge_bore.
+module hinge_pin_channel(){
+    translate([0, -0.1, hinge_z]) rotate([-90,0,0])
+        cylinder(h = case_l + 0.2, r = hinge_bore/2, $fn = 24);
 }
 
 // Wall RELIEF slot for the OPPOSITE part's knuckle i — subtract from a part's
