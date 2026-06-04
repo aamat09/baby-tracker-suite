@@ -129,6 +129,9 @@ the app is the portable, one-click way to run the whole thing.
 </p>
 <p align="center"><em>Assembled unit with the sticky-label faceplate (generated 1:1 from <code>baby-remote/labels/</code>).</em></p>
 
+> **🎛️ Want one without building it?** The remote is made in small batches —
+> **[join the device waitlist →](https://www.shmaestro.com/waitlist)**.
+
 | File | Description |
 |------|-------------|
 | `baby-remote/kicad/` | 2-layer PCB (DRC-clean, Freerouting-routed) — the manufactured board |
