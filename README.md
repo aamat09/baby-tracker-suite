@@ -125,9 +125,10 @@ the app is the portable, one-click way to run the whole thing.
 3D-printed physical remote control with ESP32-C3, 15 tactile buttons, RGB LED feedback, and LiPo battery.
 
 <p align="center">
-  <img src="baby-remote/device.png" alt="Assembled baby remote — printed snap-fit cap with a print-at-100% sticky-label faceplate over the 15 buttons" width="300">
+  <img src="baby-remote/board.png" alt="Inside the baby remote — 3D-printed PCB substrate with 15 tactile switches, a tinned-wire matrix, and the ESP32-C3 in its pocket" width="270">
+  <img src="baby-remote/device.png" alt="Assembled baby remote — snap-fit cap with a 1:1 sticky-label faceplate over the 15 buttons" width="270">
 </p>
-<p align="center"><em>Assembled unit with the sticky-label faceplate (generated 1:1 from <code>baby-remote/labels/</code>).</em></p>
+<p align="center"><em>Inside (left): the 3D-printed PCB substrate — switches + tinned-wire matrix + C3 in-pocket. Outside (right): the snap-fit cap + a 1:1 sticky-label faceplate from <code>baby-remote/labels/</code>.</em></p>
 
 > **🎛️ Want one without building it?** The remote is made in small batches —
 > **[join the device waitlist →](https://www.shmaestro.com/waitlist)**.
