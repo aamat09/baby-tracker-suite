@@ -3,6 +3,26 @@
 Per-component scheme `YYYY.ver.patch`. Components: `esphome/` (FW), `scad/` (3D
 print), `kicad/` (PCB). Each has its own `VERSION` file.
 
+## 2026.2.1 — 2026-06-06
+
+OLED test-fit refinements + a new glue-on label plate.
+
+### 3D print (scad) → 2026.2.1
+- **Thinner button engraving** on the cap: `label_widen` 0.15 → 0.05 (0.15 printed mushy).
+- **OLED from the test fit:** window short axis 14.05 → **15**; mounting-hole spacing back to
+  **19.07 × 14.05** (the spacing that physically fit — squaring it to 19.07 was wrong); pin/hole
+  Ø 3.5 → **2.0**.
+- **Snap-pins dropped from the cap** — the real holes (19.07 × 14.05) fall *inside* the
+  24.92 × 15 window, so pins had no plate to hang from. The screen drops into the window/pocket
+  and is held by the new label plate.
+- **NEW glue-on label plate** (`baby-remote-label-plate.scad`): a very thin (0.8 mm) faceplate
+  with RAISED button words + "Baby Tracker" title and through-holes for the buttons, LED, USB
+  and OLED. The OLED window slightly overlaps the glass to trap the screen. Built as a 2-colour
+  print — swap filament at **z = 0.8 mm** for contrast-coloured letters. No border frame.
+
+### Firmware (esphome) — unchanged (stays 2026.2.0)
+### PCB (kicad) — unchanged (stays 2026.1.0)
+
 ## 2026.2.0 — 2026-06-05
 
 **0.96" I2C OLED added to the remote** — a dumb 3-row status screen on the cap,

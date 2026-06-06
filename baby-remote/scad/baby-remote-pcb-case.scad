@@ -37,7 +37,7 @@ cap_t=1.6;            // plunger cup-top (lands on the switch)
 // without the glyphs creeping down into the button hole below.
 label_depth = 0.5;    // how deep the letters cut into the top face (mm)
 label_size  = 3.0;    // glyph size (mm)
-label_widen = 0.15;   // offset() that fattens each stroke / groove per side (mm)
+label_widen = 0.05;   // offset() per stroke side — thinned (0.15 printed mushy)
 label_font  = "Arial Rounded MT Bold";   // friendly + prints clean; alts below
 // alternatives (installed): "Avenir Next:style=Demi Bold", "Arial:style=Bold",
 //   "Arial Narrow:style=Bold" (fits long words), "Arial Black"
@@ -71,13 +71,13 @@ oled_enable      = true;
 // (1) module PCB outline (for the body pocket) — a bit bigger than the screen so
 //     the recess clears the PCB + reaches the corner mounting holes
 oled_pcb_w       = 25.5;  oled_pcb_h = 25.0;  oled_pcb_t = 1.3;
-// (2) THE SCREEN = the window. Measured 24.92 x 14.05 (this IS the visible glass).
-oled_glass_w     = 24.92; oled_glass_h = 14.05; oled_glass_t = 1.5;
+// (2) THE SCREEN = the window. 24.92 wide; short axis bumped 14.05 -> 15.
+oled_glass_w     = 24.92; oled_glass_h = 15.0; oled_glass_t = 1.5;
 oled_header_side = 1;     // +1 = header toward the TOP (Note/LED row); -1 = toward USB
 oled_glass_dy    = 0;     // screen centred between the 4 mounting holes
-// (3) mounting-hole centre-to-centre = 19.07 (the holes; sit OUTSIDE the 14-tall
-//     screen so the snap-pins hide under the bezel) + Ø3.5
-oled_hole_dx     = 19.07; oled_hole_dy = 19.07; oled_hole_d = 3.5;
+// (3) mounting-hole centre-to-centre: 19.07 (one axis) x 14.05 (the other — this
+//     is the spacing that physically fit; squaring it to 19.07 was wrong). Ø2.
+oled_hole_dx     = 19.07; oled_hole_dy = 14.05; oled_hole_d = 2.0;
 oled_cx          = 42;    // centre X — clears the C3 (board-x 57) on the right
 oled_cy          = 18;    // centre Y — top band, between USB edge and row 0
 oled_recess      = 0.0;   // glass recess below the outer face (0 = flush)
@@ -265,8 +265,12 @@ module cap(){
     // OLED window + PCB pocket (cut last)
     if(oled_enable) oled_cavity();
   }
-  // OLED screw bosses — added AFTER the cavity cut so they aren't carved away:
-  if(oled_enable) oled_bosses();
+  // NOTE: no snap-pins. The module's real holes (19.07 x 14.05) fall INSIDE the
+  // 24.92 x 15 window, so pins would have no plate to hang from. The screen drops
+  // into this window/pocket and is TRAPPED from the front by the glue-on label
+  // plate (baby-remote-label-plate.scad), whose OLED window is a touch smaller.
+  // (oled_snap_one/oled_bosses kept below but uncalled — re-enable if the window
+  //  is ever shrunk below the hole rectangle.)
  }
 }
 
