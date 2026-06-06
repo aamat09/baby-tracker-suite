@@ -7,7 +7,8 @@ Orientation (confirmed against the physical cap):
   - rows run Tummy(top) -> Breast(bottom); labels sit BELOW their buttons,
     facing down toward the cutout
   - columns: Breast on the LEFT (no left-right mirror)
-  - "Baby Tracker" + baby face in the bottom blank band, above the USB
+  - 0.96" OLED screen window in the bottom band (centre-left, between the
+    Breast row and the USB); "Baby Tracker" + baby face sit in the TOP band
 
 This is the first layout flipped TOP-BOTTOM (positions only; text stays upright).
 
@@ -30,6 +31,12 @@ HOLE = 7.8                                     # cover_hole (rounded square)
 LED_D = 10.0
 USB_W, USB_CX = 16.0, OFF + 66.0               # USB-edge notch (board x = 66), right side
 HOLE_RX = 1.3
+
+# ── 0.96" OLED screen window (mirror of scad oled_*) ──────────────────
+# World (case) centre, same coords the SCAD uses; page y flips (CASE_L - y).
+OLED_CX, OLED_CY = 42.0, 18.0                  # screen centre (world / case coords)
+OLED_W, OLED_H   = 24.92, 14.05                # visible screen window
+OLED_HOLE_S      = 19.07                        # snap-pin mounting-hole spacing (Ø3.5)
 CAL_H = 22.0                                   # bottom strip for calibration bar / note
 LABEL_OFF = 8.5                                # word sits this far BELOW its button (toward USB)
 FONT      = "Arial Rounded MT Bold, Arial, sans-serif"
@@ -63,14 +70,27 @@ def baby_face(fx, fy, r):
     return "\n".join(s)
 
 def header():
-    # bottom blank band: between the Breast row labels and the USB notch
-    fy = CASE_L - 16.0          # face centre (page y), down in the blank space
-    fx, fr = 11.5, 6.5
+    # TOP blank band, above the Tummy/Weight/Note row: baby face + title
+    fy = 9.0                     # face centre (page y), in the top band
+    fx, fr = 11.5, 5.5
     tcx = (fx + fr + CASE_W) / 2
     return (baby_face(fx, fy, fr) +
-            f'\n<text x="{tcx:.1f}" y="{fy+2.4:.1f}" font-family="{FONT}" '
+            f'\n<text x="{tcx:.1f}" y="{fy+2.3:.1f}" font-family="{FONT}" '
             f'font-size="7" font-weight="bold" text-anchor="middle" fill="#000">'
             f'Baby Tracker</text>')
+
+
+def oled_screen():
+    # OLED window square only (world centre -> page) + a faint centring crosshair
+    ox, oy = OLED_CX, CASE_L - OLED_CY
+    s = ['<g fill="none">']
+    s.append(f'<rect x="{ox-OLED_W/2:.2f}" y="{oy-OLED_H/2:.2f}" width="{OLED_W}" '
+             f'height="{OLED_H}" rx="1" ry="1" stroke="#555" stroke-width="0.3" '
+             f'stroke-dasharray="1 0.8"/>')
+    s.append(f'<line x1="{ox-2:.2f}" y1="{oy:.2f}" x2="{ox+2:.2f}" y2="{oy:.2f}" stroke="#ddd"/>')
+    s.append(f'<line x1="{ox:.2f}" y1="{oy-2:.2f}" x2="{ox:.2f}" y2="{oy+2:.2f}" stroke="#ddd"/>')
+    s.append('</g>')
+    return "\n".join(s)
 
 
 def svg():
@@ -111,7 +131,10 @@ def svg():
                       f'dominant-baseline="middle">{w}</text>')
     el.append('</g>')
 
-    # ── header (title + baby face) in the bottom blank band ──
+    # ── OLED screen window (bottom band, centre-left) ──
+    el.append(oled_screen())
+
+    # ── header (title + baby face) to the LEFT of the screen ──
     el.append(header())
 
     # ── orientation note + 50 mm calibration bar (below the faceplate) ──

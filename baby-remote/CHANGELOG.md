@@ -3,6 +3,41 @@
 Per-component scheme `YYYY.ver.patch`. Components: `esphome/` (FW), `scad/` (3D
 print), `kicad/` (PCB). Each has its own `VERSION` file.
 
+## 2026.2.0 — 2026-06-05
+
+**0.96" I2C OLED added to the remote** — a dumb 3-row status screen on the cap,
+fed over MQTT by n8n (last feed / last pump / pump reminder). Verified end-to-end
+on hardware (`ac:eb:e6:56:60:3c`).
+
+### Firmware (esphome) → 2026.2.0
+- **This build targets the OLED unit.** `ROW0`/`ROW1` moved off `GPIO0`/`GPIO1` to
+  **`GPIO21`/`GPIO20`** (C3 UART0 pins, free because the logger is on
+  `USB_SERIAL_JTAG`), which frees **`GPIO0` (I2C SDA) / `GPIO1` (I2C SCL)** for the
+  SSD1306 128×64 @ `0x3C`. Wiring: GND→GND, VDD→3V3, SCK→GPIO1, SDA→GPIO0.
+- **Dumb 3-row display:** subscribes to `baby/remote/display` (`{l1,l2,l3}`, retained)
+  and renders the rows under a "Baby Remote" title; falls back to IP/RSSI before any
+  data arrives.
+- **Reminder alert:** `baby/remote/alert` (`"1"`/`"0"`, retained) pulses the WS2812
+  amber every 6 s and shows a `!` by the title while active.
+- Fabbed (non-OLED) PCBs: revert `ROW0`/`ROW1` to `GPIO0`/`GPIO1` and delete the
+  `i2c`/`font`/`display`/`globals`/`interval` blocks (documented in the yaml header).
+
+### 3D print (scad) → 2026.2.0
+- **Cap now carries the 0.96" OLED** in the top band (left of the C3, clears it by
+  ~3.7 mm), glass flush through the front: window **24.92 × 14.05 mm**, mounted by
+  **4 slotted snap-pins** (19.07 mm spacing, Ø3.5) the module clicks onto from the
+  open back. Holes sit *outside* the window so the pins + the mid-board header hide
+  under the bezel. All parametric behind `oled_enable`.
+- **Sticker labels** (`labels/`): added the OLED window square to the faceplate and
+  moved "Baby Tracker" + the baby face to the top band.
+
+### Backend (n8n)
+- New **Baby Remote Display** workflow (`baby-tracker/n8n/baby_remote_display.json`):
+  every-minute schedule → query last feed/pump from Postgres → publish the 3 rows +
+  the pump-due alert (reuses the existing Postgres + MQTT credentials).
+
+### PCB (kicad) — unchanged (stays 2026.1.0)
+
 ## 2026.1.1 — 2026-06-03
 
 ### Firmware (esphome) → 2026.1.1

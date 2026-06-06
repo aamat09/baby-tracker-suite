@@ -2,15 +2,16 @@
 # Firmware for the 3D-printed physical remote.
 #
 # 15 buttons on a 4x4 scan matrix (no diodes — single-press logging):
-#   Rows (drive):  GPIO0, GPIO1, GPIO3, GPIO4   ← ACTIVE; matches the fabricated
-#                  JLCPCB PCB, the back-engraving, KiCad and SCAD.
+#   Rows (drive):  GPIO21, GPIO20, GPIO3, GPIO4   ← ACTIVE (OLED build, see NOTE)
 #   Cols (sense):  GPIO5, GPIO6, GPIO7, GPIO10  (internal pullups)
 #   WS2812B LED:   GPIO8
 # The 16th position (row 3, col 3) is the LED window — no switch.
 #
-# NOTE — the one HAND-SOLDERED prototype board has ROW0/ROW1 mis-wired to
-# GPIO21/GPIO20 (C3 UART0 pins). To flash THAT board only, change the first two
-# row pins below to GPIO21 / GPIO20. All fabbed PCBs use GPIO0/GPIO1 (active here).
+# NOTE — THIS BUILD targets the OLED unit: ROW0/ROW1 are moved off GPIO0/GPIO1 to
+# GPIO21/GPIO20 (C3 UART0 pins, free because the logger runs on USB_SERIAL_JTAG),
+# which frees GPIO0 (I2C SDA) + GPIO1 (I2C SCL) for the 0.96" SSD1306 OLED.
+# To flash a FABBED PCB (no OLED) instead: set ROW0/ROW1 back to GPIO0/GPIO1 and
+# delete the i2c/font/display/wifi_info/wifi_signal blocks below.
 #
 # Each press publishes MQTT to trigger the n8n baby-event webhook; the RGB
 # LED flashes the button's colour as confirmation.
@@ -20,7 +21,7 @@ esphome:
   friendly_name: "Baby Remote"
   project:
     name: "smarthomemaestro.baby_remote"
-    version: "2026.1.1"
+    version: "2026.2.0"
 
 esp32:
   board: esp32-c3-devkitm-1
@@ -43,6 +44,57 @@ mqtt:
   username: !secret mqtt_username
   password: !secret mqtt_password
   discovery: false
+  # The OLED is a dumb 3-row display: the n8n backend PUBLISHES the rows
+  # (last feed / last pump / reminder) here (retained), the device just renders.
+  on_json_message:
+    topic: baby/remote/display
+    then:
+      - lambda: |-
+          if (!x["l1"].isNull()) id(disp_l1) = x["l1"].as<std::string>();
+          if (!x["l2"].isNull()) id(disp_l2) = x["l2"].as<std::string>();
+          if (!x["l3"].isNull()) id(disp_l3) = x["l3"].as<std::string>();
+  # Retained alert flag — "1"/"on" pulses the LED while a reminder is active.
+  on_message:
+    topic: baby/remote/alert
+    then:
+      - lambda: 'id(alert_active) = (x == "1" || x == "on" || x == "true");'
+
+# 3 display rows + reminder flag, pushed over MQTT (above).
+globals:
+  - id: disp_l1
+    type: std::string
+    restore_value: no
+    initial_value: '""'
+  - id: disp_l2
+    type: std::string
+    restore_value: no
+    initial_value: '""'
+  - id: disp_l3
+    type: std::string
+    restore_value: no
+    initial_value: '""'
+  - id: alert_active
+    type: bool
+    restore_value: no
+    initial_value: 'false'
+
+# While a reminder is active, give a gentle amber LED pulse every few seconds
+# (button-press feedback still flashes the button colour independently).
+interval:
+  - interval: 6s
+    then:
+      - if:
+          condition:
+            lambda: 'return id(alert_active);'
+          then:
+            - light.turn_on:
+                id: status_led
+                red: 100%
+                green: 45%
+                blue: 0%
+                brightness: 70%
+            - delay: 300ms
+            - light.turn_off: {id: status_led}
 
 logger:
   level: WARN
@@ -61,13 +113,59 @@ light:
     internal: true
     default_transition_length: 0s
 
+# ── 0.96" SSD1306 OLED (I2C) — OLED build only ─────────────────────────────
+# Rows 0/1 were moved to GPIO21/20 so GPIO0/1 are free for I2C. Wiring (4-pin
+# module): GND→GND, VDD→3V3, SCK→GPIO1 (SCL), SDA→GPIO0. Address 0x3C.
+# Bring-up screen: name + IP + RSSI (confirms wiring + WiFi).
+i2c:
+  sda: GPIO0
+  scl: GPIO1
+  scan: true
+  frequency: 400kHz
+
+font:
+  - file: "gfonts://Roboto"
+    id: font_title
+    size: 16
+  - file: "gfonts://Roboto"
+    id: font_body
+    size: 11
+
+text_sensor:
+  - platform: wifi_info
+    ip_address:
+      id: wifi_ip
+
+sensor:
+  - platform: wifi_signal
+    id: wifi_rssi
+    update_interval: 5s
+
+display:
+  - platform: ssd1306_i2c
+    model: "SSD1306 128x64"
+    address: 0x3C
+    id: oled
+    lambda: |-
+      // Title (a '!' marker when a reminder is active)
+      it.printf(0, 0, id(font_title), id(alert_active) ? "Baby Remote  !" : "Baby Remote");
+      if (id(disp_l1).empty() && id(disp_l2).empty() && id(disp_l3).empty()) {
+        // No data pushed yet -> show connectivity as a fallback
+        it.printf(0, 20, id(font_body), "IP %s", id(wifi_ip).state.c_str());
+        it.printf(0, 36, id(font_body), "RSSI %.0f dBm", id(wifi_rssi).state);
+      } else {
+        it.printf(0, 18, id(font_body), "%s", id(disp_l1).c_str());
+        it.printf(0, 34, id(font_body), "%s", id(disp_l2).c_str());
+        it.printf(0, 50, id(font_body), "%s", id(disp_l3).c_str());
+      }
+
 # 4x4 scan matrix — 8 GPIOs for up to 16 keys (no diodes, no pulldowns →
 # rows driven, columns read via internal pullups).
 matrix_keypad:
   id: keypad
   rows:
-    - pin: GPIO0    # ROW0 — fabbed PCB (hand-wired prototype = GPIO21; see header)
-    - pin: GPIO1    # ROW1 — fabbed PCB (hand-wired prototype = GPIO20)
+    - pin: GPIO21   # ROW0 — OLED build: moved off GPIO0 (now I2C SDA). Fabbed PCB = GPIO0
+    - pin: GPIO20   # ROW1 — OLED build: moved off GPIO1 (now I2C SCL). Fabbed PCB = GPIO1
     - pin: GPIO3    # ROW2
     - pin: GPIO4    # ROW3
   columns:

@@ -1,0 +1,158 @@
+{
+  "id": "BabyRemoteDisplay1",
+  "name": "Baby Remote Display",
+  "description": "Computes last feed / last pump + pump-due reminder and publishes them (retained) to the baby-remote OLED over MQTT. Runs every minute so the 'X ago' text and the reminder stay fresh. Device just renders baby/remote/display {l1,l2,l3} + flashes its LED on baby/remote/alert.",
+  "active": true,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 1
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        220,
+        300
+      ],
+      "id": "sched1",
+      "name": "Every Minute"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT\n  (SELECT logged_at FROM baby_events WHERE event_type='feed' ORDER BY logged_at DESC LIMIT 1) AS last_feed,\n  (SELECT logged_at FROM baby_events WHERE event_type='pump' ORDER BY logged_at DESC LIMIT 1) AS last_pump,\n  (SELECT event_subtype FROM baby_events WHERE event_type='pump' ORDER BY logged_at DESC LIMIT 1) AS last_pump_side;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        440,
+        300
+      ],
+      "id": "pg1",
+      "name": "Last Feed + Pump",
+      "credentials": {
+        "postgres": {
+          "id": "Gsash8Ngl53AYBsJ",
+          "name": "Postgres maestro_hub"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Pump-due threshold (minutes). Matches the 2h Pump Reminder workflow; tweak here.\nconst PUMP_INTERVAL_MIN = 120;\n\nconst r = $input.first().json;\nconst now = Date.now();\n\nfunction agoStr(ts) {\n  if (!ts) return null;\n  const min = Math.floor((now - new Date(ts).getTime()) / 60000);\n  if (min < 1) return 'now';\n  const h = Math.floor(min / 60), m = min % 60;\n  return h > 0 ? (h + 'h' + m + 'm') : (m + 'm');\n}\nfunction inStr(min) {\n  if (min >= 60) return Math.floor(min / 60) + 'h' + (min % 60) + 'm';\n  return min + 'm';\n}\n\nconst feedAgo = agoStr(r.last_feed);\nconst pumpAgo = agoStr(r.last_pump);\n\nconst l1 = feedAgo ? ('Feed ' + feedAgo + ' ago') : 'Feed: --';\nconst l2 = pumpAgo ? ('Pump ' + pumpAgo + ' ago') : 'Pump: --';\n\nlet l3 = '';\nlet alert = '0';\nif (r.last_pump) {\n  const sincePump = Math.floor((now - new Date(r.last_pump).getTime()) / 60000);\n  const due = PUMP_INTERVAL_MIN - sincePump;\n  if (due <= 0) { l3 = 'Pump due now'; alert = '1'; }\n  else { l3 = 'Pump in ' + inStr(due); }\n}\n\nconst display = JSON.stringify({ l1: l1, l2: l2, l3: l3 });\nreturn [{ json: { display: display, alert: alert, l1: l1, l2: l2, l3: l3 } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        660,
+        300
+      ],
+      "id": "code1",
+      "name": "Build Rows"
+    },
+    {
+      "parameters": {
+        "topic": "baby/remote/display",
+        "sendInputData": false,
+        "message": "={{ $json.display }}",
+        "options": {
+          "qos": 0,
+          "retain": true
+        }
+      },
+      "type": "n8n-nodes-base.mqtt",
+      "typeVersion": 1,
+      "position": [
+        900,
+        220
+      ],
+      "id": "mqtt1",
+      "name": "Publish Display",
+      "credentials": {
+        "mqtt": {
+          "id": "vmy0aLGuM4nrPH5D",
+          "name": "MQTT account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "topic": "baby/remote/alert",
+        "sendInputData": false,
+        "message": "={{ $json.alert }}",
+        "options": {
+          "qos": 0,
+          "retain": true
+        }
+      },
+      "type": "n8n-nodes-base.mqtt",
+      "typeVersion": 1,
+      "position": [
+        900,
+        380
+      ],
+      "id": "mqtt2",
+      "name": "Publish Alert",
+      "credentials": {
+        "mqtt": {
+          "id": "vmy0aLGuM4nrPH5D",
+          "name": "MQTT account 2"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Every Minute": {
+      "main": [
+        [
+          {
+            "node": "Last Feed + Pump",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Last Feed + Pump": {
+      "main": [
+        [
+          {
+            "node": "Build Rows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Rows": {
+      "main": [
+        [
+          {
+            "node": "Publish Display",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Publish Alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  }
+}

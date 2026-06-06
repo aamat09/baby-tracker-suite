@@ -69,16 +69,21 @@
 <text x="35.90" y="27.40" dominant-baseline="middle">Weight</text>
 <text x="52.90" y="27.40" dominant-baseline="middle">Note</text>
 </g>
-<g fill="none" stroke="#000" stroke-width="0.45" stroke-linecap="round" stroke-linejoin="round">
-<circle cx="11.5" cy="94.8" r="6.5" fill="#fff"/>
-<circle cx="5.0" cy="94.8" r="1.69"/>
-<circle cx="18.0" cy="94.8" r="1.69"/>
-<path d="M 10.10 88.60 q 1.4 -2.4 2.9 -0.7"/>
-<circle cx="9.16" cy="94.28" r="0.75" fill="#000"/>
-<circle cx="13.84" cy="94.28" r="0.75" fill="#000"/>
-<path d="M 8.77 96.88 q 2.73 3.25 5.46 0"/>
+<g fill="none">
+<rect x="29.54" y="85.77" width="24.92" height="14.05" rx="1" ry="1" stroke="#555" stroke-width="0.3" stroke-dasharray="1 0.8"/>
+<line x1="40.00" y1="92.80" x2="44.00" y2="92.80" stroke="#ddd"/>
+<line x1="42.00" y1="90.80" x2="42.00" y2="94.80" stroke="#ddd"/>
 </g>
-<text x="53.4" y="97.2" font-family="Arial Rounded MT Bold, Arial, sans-serif" font-size="7" font-weight="bold" text-anchor="middle" fill="#000">Baby Tracker</text>
+<g fill="none" stroke="#000" stroke-width="0.45" stroke-linecap="round" stroke-linejoin="round">
+<circle cx="11.5" cy="9.0" r="5.5" fill="#fff"/>
+<circle cx="6.0" cy="9.0" r="1.43"/>
+<circle cx="17.0" cy="9.0" r="1.43"/>
+<path d="M 10.10 3.80 q 1.4 -2.4 2.9 -0.7"/>
+<circle cx="9.52" cy="8.56" r="0.75" fill="#000"/>
+<circle cx="13.48" cy="8.56" r="0.75" fill="#000"/>
+<path d="M 9.19 10.76 q 2.31 2.75 4.62 0"/>
+</g>
+<text x="52.9" y="11.3" font-family="Arial Rounded MT Bold, Arial, sans-serif" font-size="7" font-weight="bold" text-anchor="middle" fill="#000">Baby Tracker</text>
 <g font-family="Arial, sans-serif" font-size="3" fill="#000">
 <text x="2" y="115.8">USB at bottom · LED top-right · PRINT AT 100% (actual size, no scaling)</text>
 <line x1="2" y1="122.8" x2="52" y2="122.8" stroke="#000" stroke-width="0.3"/>

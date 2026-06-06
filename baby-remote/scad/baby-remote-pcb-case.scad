@@ -58,6 +58,49 @@ plate_under = sw_h + cap_t;             // 6.6  cap plate underside
 plate_top   = plate_under + top_thick;  // 8.6  cap outer top
 barrel_len  = plate_under - 0.4;        // 6.2  barrels hang to ~board top
 
+// ─── 0.96" I2C OLED (square, 4 mounting holes) — front flush window ──────────
+// Sits in the TOP band beside the C3 (the USB/C3 fill the top-RIGHT, so the screen
+// shifts LEFT of board-x 57), between the USB edge and the Breast/Bottle/Solid/
+// Sleep row. Mounts glass-FORWARD: the glass panel pokes flush through the plate;
+// the plate overlaps the larger PCB on all sides (hides the PCB edge + front stop);
+// SNAP-PINS on the plate underside pass through the 4 mounting holes and click onto
+// the module's back; the module pushes in from the inside (open back). Header points
+// toward the top; wires reach the C3.
+// !!! ALL FOUR groups below are CALIPER-MEASURED off your module — verify before print !!!
+oled_enable      = true;
+// (1) module PCB outline (for the body pocket) — a bit bigger than the screen so
+//     the recess clears the PCB + reaches the corner mounting holes
+oled_pcb_w       = 25.5;  oled_pcb_h = 25.0;  oled_pcb_t = 1.3;
+// (2) THE SCREEN = the window. Measured 24.92 x 14.05 (this IS the visible glass).
+oled_glass_w     = 24.92; oled_glass_h = 14.05; oled_glass_t = 1.5;
+oled_header_side = 1;     // +1 = header toward the TOP (Note/LED row); -1 = toward USB
+oled_glass_dy    = 0;     // screen centred between the 4 mounting holes
+// (3) mounting-hole centre-to-centre = 19.07 (the holes; sit OUTSIDE the 14-tall
+//     screen so the snap-pins hide under the bezel) + Ø3.5
+oled_hole_dx     = 19.07; oled_hole_dy = 19.07; oled_hole_d = 3.5;
+oled_cx          = 42;    // centre X — clears the C3 (board-x 57) on the right
+oled_cy          = 18;    // centre Y — top band, between USB edge and row 0
+oled_recess      = 0.0;   // glass recess below the outer face (0 = flush)
+oled_win_fit     = 0.15;  // per-side window slack — window ≈ exactly the screen size
+oled_pcb_fit     = 0.4;   // per-side slack for the PCB pocket behind the plate
+// (4) snap-pin geometry
+oled_snap_clear  = 0.25;  // shaft clearance inside the hole (per dia)
+oled_snap_barb   = 0.55;  // how far the barb flares beyond the hole (grip)
+oled_snap_lip    = 0.6;   // barb catch height below the PCB back
+oled_snap_slot   = 0.7;   // flex-slot width (splits the pin so the barb can squeeze)
+// 4-pin header (GND/VDD/SCK/SDA) — a MID-BOARD male header on the module's BACK
+// face (not an edge), pointing into the open cavity. No plate holes needed; the
+// pins + 4-wire harness clear into the interior. (Offset toward the header_side.)
+oled_hdr_n       = 4;     oled_hdr_pitch = 2.54;
+oled_hdr_y       = oled_cy + oled_header_side*5.0;  // mid-board, offset off-centre
+oled_hdr_len     = 6.0;   // approx header pin length into the cavity (visual)
+function oled_hdr_x(i)=oled_cx + (i-(oled_hdr_n-1)/2)*oled_hdr_pitch;
+// derived z planes
+oled_glass_front = plate_top - oled_recess;          // 8.6  glass outer face (flush)
+oled_lip_z       = oled_glass_front - oled_glass_t;  // 7.1  PCB front / glass back plane
+oled_pcb_back    = oled_lip_z - oled_pcb_t;          // 5.8  PCB back plane (boss ends)
+oled_pocket_z    = oled_pcb_back - 0.4;              // 5.4  pocket floor (opens to cavity)
+
 // ─── Footprint (case_w/case_l, inner_*, px/py, usb_cx now in dims.scad) ──
 function btnx(c)=px(cx(c));
 function btny(r)=py(cy(r));
@@ -123,8 +166,53 @@ module cover_clamp(yy){
     }
 }
 
+// ── OLED 4 hole-centre positions (module-local, symmetric about the PCB centre) ─
+function oled_holes()=[for(sx=[-1,1],sy=[-1,1])
+                        [oled_cx+sx*oled_hole_dx/2, oled_cy+sy*oled_hole_dy/2]];
+
+// ── OLED window + PCB pocket (SUBTRACT). The glass window (z lip->top) is the
+//    visible flush opening; the wider PCB pocket (z pocket_floor->lip) recesses the
+//    module body and opens into the cavity. Difference = the picture-frame lip. ──
+module oled_cavity(){
+    // glass through-window, flush with the outer face
+    translate([oled_cx, oled_cy+oled_glass_dy, (oled_lip_z+plate_top+0.1)/2])
+        cube([oled_glass_w+2*oled_win_fit, oled_glass_h+2*oled_win_fit,
+              (plate_top+0.1)-oled_lip_z], center=true);
+    // PCB body pocket behind the plate (floor opens down into the cavity, so the
+    // mid-board header pins + the 4-wire harness clear into the open interior)
+    translate([oled_cx, oled_cy, (oled_pocket_z+oled_lip_z)/2])
+        cube([oled_pcb_w+2*oled_pcb_fit, oled_pcb_h+2*oled_pcb_fit,
+              oled_lip_z-oled_pocket_z], center=true);
+}
+
+// ── OLED snap-pins (ADD after the cavity cut so they survive). One per mounting
+//    hole, hanging from the lip plane: a shaft sized to slip through the hole, a
+//    barbed head that flares past the hole and CATCHES the PCB back, a chamfered
+//    tip for lead-in, and a flex slot so the barb squeezes through on insertion.
+//    Push the module on from the open back; it clicks and seats against the lip. ─
+module oled_snap_one(hx,hy){
+    sr  = (oled_hole_d - oled_snap_clear)/2;   // shaft radius (slips in the hole)
+    br  = oled_hole_d/2 + oled_snap_barb;      // barb max radius (grips the back)
+    btop= oled_pcb_back;                        // barb shoulder = PCB back plane
+    bbot= oled_pcb_back - oled_snap_lip;        // barb underside
+    tip = bbot - oled_snap_clear*2;             // chamfer tip (lead-in)
+    difference(){
+        union(){
+            // shaft: from the lip plane down through the hole to the barb shoulder
+            translate([hx,hy,btop]) cylinder(h=oled_lip_z-btop, r=sr, $fn=24);
+            // barb: shoulder (wide) tapering down to a point for insertion lead-in
+            translate([hx,hy,tip]) cylinder(h=btop-tip, r1=0, r2=br, $fn=24);
+        }
+        // flex slot through shaft + barb so the two halves squeeze on the way in
+        translate([hx-br-0.1, hy-oled_snap_slot/2, tip-0.1])
+            cube([2*br+0.2, oled_snap_slot, oled_lip_z-tip+0.2]);
+    }
+}
+module oled_bosses(){ for(h=oled_holes()) oled_snap_one(h[0],h[1]); }
+
 // ─── Cap ──────────────────────────────────────────────────
 module cap(){
+ union(){   // hooks are unioned on AFTER the oled cavity cut (below)
   difference(){
     union(){
         difference(){
@@ -174,7 +262,12 @@ module cap(){
                 offset(delta=label_widen)
                     text(labels[li],size=label_size,halign="center",valign="bottom",font=label_font);
     }
+    // OLED window + PCB pocket (cut last)
+    if(oled_enable) oled_cavity();
   }
+  // OLED screw bosses — added AFTER the cavity cut so they aren't carved away:
+  if(oled_enable) oled_bosses();
+ }
 }
 
 // ─── PCB stand-in (visual only) ───────────────────────────
@@ -183,6 +276,27 @@ module board_mock(){
     color("#222") for(r=[0:rows_n-1],c=[0:cols_n-1]) if(!is_led(r,c))
         translate([btnx(c)-sw_size/2,btny(r)-sw_size/2,0]) cube([sw_size,sw_size,sw_h]);
     color("#333") translate([usb_cx-9,py(2),0]) cube([18,22.5,3]);
+}
+
+// ─── OLED module stand-in (visual only) — square module seated in the pocket ──
+module oled_mock(){
+    // PCB (back face at oled_pcb_back)
+    color("#102a43") translate([oled_cx-oled_pcb_w/2, oled_cy-oled_pcb_h/2, oled_pcb_back])
+        difference(){
+            cube([oled_pcb_w, oled_pcb_h, oled_pcb_t]);
+            for(h=oled_holes()) translate([h[0]-(oled_cx-oled_pcb_w/2),h[1]-(oled_cy-oled_pcb_h/2),-0.1])
+                cylinder(h=oled_pcb_t+0.2, d=2.2, $fn=16);
+        }
+    // glass panel (flush to the outer face)
+    color("#223") translate([oled_cx-oled_glass_w/2, oled_cy+oled_glass_dy-oled_glass_h/2, oled_lip_z])
+        cube([oled_glass_w, oled_glass_h, oled_glass_t]);
+    // active area (lit) — 0.96" 128x64 ~ 21.7 x 10.9 mm
+    color("#39d0ff") translate([oled_cx-21.7/2, oled_cy+oled_glass_dy-10.9/2, oled_glass_front-0.05])
+        cube([21.7, 10.9, 0.1]);
+    // mid-board 4-pin header on the BACK face, pins pointing into the cavity
+    for(i=[0:oled_hdr_n-1]) color("#b08d57")
+        translate([oled_hdr_x(i)-0.32, oled_hdr_y-0.32, oled_pcb_back-oled_hdr_len])
+            cube([0.64,0.64, oled_hdr_len]);
 }
 
 // ─── Assembly preview ─────────────────────────────────────
@@ -196,6 +310,7 @@ module assembly(){
         if(!is_led(r,c) && li<15) translate([btnx(c),btny(r),sw_h]) color(btn_colors[li]) button_plunger();
     }
     translate([btnx(3),btny(3),plate_under]) color("White",0.5) led_window();
+    if(oled_enable) oled_mock();
 }
 
 // ─── Render (uncomment ONE for STL export) ────────────────
