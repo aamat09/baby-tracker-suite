@@ -122,7 +122,12 @@ the app is the portable, one-click way to run the whole thing.
 
 ### Baby Remote (in progress)
 
-3D-printed physical remote control with ESP32-C3, 15 tactile buttons, RGB LED feedback, and LiPo battery.
+3D-printed physical remote control with ESP32-C3, 15 tactile buttons, RGB LED feedback, and a 0.96" OLED status screen.
+
+<p align="center">
+  <img src="assets/baby-remote.png" alt="3D-printed baby-remote — 15 labeled buttons and a 0.96-inch OLED showing last feed, last pump and the next-pump reminder" width="300">
+</p>
+<p align="center"><em>The remote with its 0.96" OLED — last feed, last pump and the next-pump reminder, pushed live over MQTT by n8n.</em></p>
 
 
 > **🎛️ Want one without building it?** The remote is made in small batches —
