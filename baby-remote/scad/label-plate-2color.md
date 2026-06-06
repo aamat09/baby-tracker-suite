@@ -19,15 +19,21 @@ already oriented this way) — no supports needed.
 
 ## Bambu Studio (manual swap)
 
-1. Load `baby-remote-label-plate.stl` and slice.
-2. Open **Preview** and use the **vertical layer slider** on the right edge.
-3. Drag to the layer at **z ≈ 0.8 mm**. At 0.2 mm layer height that's the **start
-   of layer 5** (layers 1–4 = the 0.8 mm base).
-4. Click the **`+` / flag icon** on the slider at that layer → **Add color change**.
-   On a single-extruder printer this inserts a **pause** (`M600`-style).
-5. Print. At z = 0.8 mm the printer parks and pauses → **load the contrast
-   filament, purge until the old color is gone, then Resume.** The 0.6 mm of
-   letters print in the new color.
+1. **Add a second filament first** (this is the step everyone misses — without it
+   the color-change `+` does nothing, because there's no other color to switch to).
+   In **Prepare**, click the small **`+`** next to the filament list → you now have
+   Filament 1 + Filament 2. Set Filament 2 to your letter color.
+2. Load `baby-remote-label-plate.stl` and **Slice**.
+3. Switch to the **Preview** tab (the color-change `+` only works in Preview, **not**
+   Prepare — the other reason "nothing happens").
+4. On the **vertical layer slider** (right edge), drag to **z ≈ 0.8 mm**. At 0.2 mm
+   layer height that's the **start of layer 5** (layers 1–4 = the 0.8 mm base).
+5. Click the **`+`** on the slider at that layer → it inserts a **color change to
+   Filament 2** (a flag/diamond marker appears on the slider).
+6. Print.
+   - **AMS lite (A1 mini):** assign Filament 2 to a slot → it swaps automatically.
+   - **Single spool, no AMS:** the change becomes a **pause** → at z = 0.8 mm load
+     the contrast filament, purge until the old color is gone, then **Resume**.
 
 > Target it **by height (0.8 mm)**, not by layer number, so it still lands right if
 > you change layer height (e.g. 0.16 mm → the base is 5 layers, swap before layer 6).
