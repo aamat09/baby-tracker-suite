@@ -45,12 +45,25 @@ already oriented this way) — no supports needed.
 - **Cura:** *Extensions → Post Processing → Modify G-Code → Filament Change*, set
   it at the layer/height for z = 0.8 mm.
 
-## No-babysitting alternative (AMS / multi-material)
+## No-babysitting alternative (AMS / multi-material) — RECOMMENDED
 
-If you have an AMS or multi-extruder setup, ask for the **split export**
-(`…-plate-base.stl` + `…-plate-letters.stl`). Load both, assign a color per object,
-and the slicer handles the change automatically — perfect registration since both
-share the same origin.
+If the per-layer color-change `+` won't cooperate (a known Bambu Studio quirk),
+skip it entirely and use the **two split STLs** instead. They share the same origin
+so they register exactly:
+
+- `baby-remote-label-plate-base.stl` — the plate (Filament 1)
+- `baby-remote-label-plate-letters.stl` — just the raised words + title (Filament 2)
+
+(Regenerate with `openscad -D 'part="base"' …` / `-D 'part="letters"' …` — see the
+header of `baby-remote-label-plate.scad`.)
+
+**Bambu Studio:**
+1. **Import** `…-base.stl`.
+2. **Right-click the object → Add part → Load…** → pick `…-letters.stl`. It loads as
+   a sub-part snapped to the shared origin (no manual aligning).
+3. Click the **letters** part in the objects panel → set its **Filament to 2**.
+4. **Slice.** The letters only exist above 0.8 mm, so the slicer inserts the color
+   change automatically; the AMS swaps for you. No slider, no manual pause.
 
 ## Assembly
 

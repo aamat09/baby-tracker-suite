@@ -38,25 +38,31 @@ oled_win_h = oled_glass_h - 2*trap_lip;   // 13.40
 module rbox(w,l,h,r){ hull() for(x=[r,w-r],y=[r,l-r]) translate([x,y,0]) cylinder(h=h,r=r,$fn=32); }
 module rbox_c(w,l,h,r){ translate([-w/2,-l/2,0]) rbox(w,l,h,r); }
 
+// 2-colour split export. "all" = one piece (default). For multi-material printing
+// export each separately — they share this origin so they stack/register exactly:
+//   openscad -D 'part="base"'    -o baby-remote-label-plate-base.stl    this.scad
+//   openscad -D 'part="letters"' -o baby-remote-label-plate-letters.stl this.scad
+// Load BOTH in the slicer, assign Filament 1 -> base, Filament 2 -> letters.
+part = "all";   // "all" | "base" | "letters"
+
 module label_plate(){
   difference(){
     union(){
-      // thin base plate
-      rbox(case_w, case_l, plate_t, corner_r);
+      // thin base plate (colour 1)
+      if(part != "letters") rbox(case_w, case_l, plate_t, corner_r);
 
-      // raised button words
-      for(r=[0:rows_n-1], c=[0:cols_n-1]){ li = r*cols_n + c;
-        if(!is_led(r,c) && li < len(labels))
-          translate([btnx(c), btny(r)+label_dy, plate_t])
-            linear_extrude(label_h)
-              text(labels[li], size=label_size, halign="center", valign="bottom", font=label_font);
+      // raised button words + "Baby Tracker" title (colour 2)
+      if(part != "base"){
+        for(r=[0:rows_n-1], c=[0:cols_n-1]){ li = r*cols_n + c;
+          if(!is_led(r,c) && li < len(labels))
+            translate([btnx(c), btny(r)+label_dy, plate_t])
+              linear_extrude(label_h)
+                text(labels[li], size=label_size, halign="center", valign="bottom", font=label_font);
+        }
+        translate([case_w/2, (btny(3)+label_dy+label_size + (case_l-3))/2, plate_t])
+          linear_extrude(label_h)
+            text("Baby Tracker", size=title_size, halign="center", valign="center", font=label_font);
       }
-
-      // raised "Baby Tracker" title (far band, clear of the Tummy row)
-      ty = (btny(3)+label_dy+label_size + (case_l-3)) / 2;
-      translate([case_w/2, ty, plate_t])
-        linear_extrude(label_h)
-          text("Baby Tracker", size=title_size, halign="center", valign="center", font=label_font);
     }
 
     // ── cutouts ──
