@@ -397,16 +397,58 @@
               "cards": [
                 {
                   "type": "custom:button-card",
-                  "name": "Sleep",
+                  "name": "Sleep Start",
                   "icon": "mdi:sleep",
                   "tap_action": {
                     "action": "call-service",
-                    "service": "script.baby_sleep_toggle",
+                    "service": "rest_command.log_baby_event",
+                    "service_data": { "event_type": "sleep", "event_subtype": "start" },
                     "haptic": "heavy"
                   },
                   "styles": {
                     "card": [
                       { "background-color": "#b0a0e8" },
+                      { "color": "#ffffff" },
+                      { "height": "80px" },
+                      { "border-radius": "12px" },
+                      { "transition": "transform 0.15s ease, opacity 0.15s ease" }
+                    ],
+                    "icon": [
+                      { "color": "#ffffff" },
+                      { "width": "32px" }
+                    ],
+                    "name": [
+                      { "color": "#ffffff" },
+                      { "font-size": "13px" },
+                      { "font-weight": "bold" }
+                    ]
+                  },
+                  "state": [
+                    {
+                      "value": "on",
+                      "styles": {
+                        "card": [
+                          { "transform": "scale(0.9)" },
+                          { "opacity": "0.7" }
+                        ]
+                      }
+                    }
+                  ],
+                  "show_state": false
+                },
+                {
+                  "type": "custom:button-card",
+                  "name": "Sleep End",
+                  "icon": "mdi:sleep-off",
+                  "tap_action": {
+                    "action": "call-service",
+                    "service": "rest_command.log_baby_event",
+                    "service_data": { "event_type": "sleep", "event_subtype": "end" },
+                    "haptic": "heavy"
+                  },
+                  "styles": {
+                    "card": [
+                      { "background-color": "#9a86d4" },
                       { "color": "#ffffff" },
                       { "height": "80px" },
                       { "border-radius": "12px" },

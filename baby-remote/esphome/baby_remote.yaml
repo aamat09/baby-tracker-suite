@@ -233,8 +233,24 @@ binary_sensor:
     row: 0
     col: 3
     name: "Sleep"
-    on_press:
-      - script.execute: {id: log_event, event_type: "sleep", event_subtype: "toggle", r: 123, g: 104, b: 238}
+    # Single tap = sleep START; double tap (two taps <1s apart) = sleep END.
+    # on_multi_click resolves the gesture, so the device sends an explicit
+    # start/end subtype (no more "toggle" — the backend stores it verbatim).
+    on_multi_click:
+      # Double-click pattern is matched first (more specific) -> sleep end.
+      - timing:
+          - ON for at most 0.6s
+          - OFF for at most 0.6s
+          - ON for at most 0.6s
+          - OFF for at least 0.1s
+        then:
+          - script.execute: {id: log_event, event_type: "sleep", event_subtype: "end", r: 80, g: 70, b: 160}
+      # Single click -> sleep start (fires after ~0.6s of no second tap).
+      - timing:
+          - ON for at most 0.6s
+          - OFF for at least 0.6s
+        then:
+          - script.execute: {id: log_event, event_type: "sleep", event_subtype: "start", r: 123, g: 104, b: 238}
 
   # ── Row 1: Pump + Other ──
   - platform: matrix_keypad
