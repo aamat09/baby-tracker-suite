@@ -1,0 +1,170 @@
+{
+  "id": "bb7a879cf6514081",
+  "name": "Baby Feed Reminder",
+  "description": "Sends a feed reminder 3h after the last breast/bottle feed (polls Postgres; de-duped per feed).",
+  "active": false,
+  "isArchived": false,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 5
+            }
+          ]
+        }
+      },
+      "name": "Every 5 Minutes",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        250,
+        300
+      ],
+      "id": "361271bd7236402b"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT logged_at, event_subtype FROM baby_events WHERE event_type = 'feed' AND event_subtype IN ('breast','bottle') ORDER BY logged_at DESC LIMIT 1",
+        "options": {
+          "queryBatching": "independently"
+        }
+      },
+      "name": "Fetch Last Feed",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.5,
+      "position": [
+        470,
+        300
+      ],
+      "id": "a0bdb9ec24264c06",
+      "credentials": {
+        "postgres": {
+          "id": "Gsash8Ngl53AYBsJ",
+          "name": "Postgres maestro_hub"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Feed reminder: notify 3h after the LAST breast/bottle feed.\n// Polls the DB; a newer feed naturally resets the clock. De-duped via static\n// data so each feed fires at most one reminder.\nconst FEED_INTERVAL_MIN = 180;            // 3 hours\nconst TZ = 'America/New_York';\n\nconst rows = $input.all();\nif (!rows.length) return [];               // no feeds logged yet\nconst r = rows[0].json;\nconst last = new Date(r.logged_at).getTime();\nconst mins = Math.floor((Date.now() - last) / 60000);\nif (mins < FEED_INTERVAL_MIN) return [];   // not due yet\n\nconst store = $getWorkflowStaticData('global');\nif (store.notifiedFor === r.logged_at) return [];   // already reminded for this feed\nstore.notifiedFor = r.logged_at;\n\nconst sub = r.event_subtype || '';\nconst dtTZ = new Date(new Date(last).toLocaleString('en-US', { timeZone: TZ }));\nlet h = dtTZ.getHours();\nconst m = dtTZ.getMinutes();\nconst ampm = h >= 12 ? 'PM' : 'AM';\nconst h12 = h % 12 || 12;\nconst t = h12 + ':' + String(m).padStart(2, '0') + ' ' + ampm;\nconst hrs = FEED_INTERVAL_MIN / 60;\n\nreturn [{ json: {\n  title: '🍼 Feed Reminder',\n  message: 'Time to feed again! Last feed' + (sub ? (' (' + sub + ')') : '') +\n           ' was at ' + t + ' — ' + hrs + ' hours ago.'\n}}];"
+      },
+      "name": "Check Feed Due",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        690,
+        300
+      ],
+      "id": "a1892c7764e84689"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://homeassistant.local:8123/api/services/notify/mobile_app_your_phone",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer <HA_LONG_LIVED_TOKEN>"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ title: $json.title, message: $json.message }) }}"
+      },
+      "name": "Notify You",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        910,
+        220
+      ],
+      "id": "7913bc087fad4074"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://homeassistant.local:8123/api/services/notify/mobile_app_partner_phone",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer <HA_LONG_LIVED_TOKEN>"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ title: $json.title, message: $json.message }) }}"
+      },
+      "name": "Notify Partner",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        910,
+        380
+      ],
+      "id": "44aa58a6f8654f8f"
+    }
+  ],
+  "connections": {
+    "Every 5 Minutes": {
+      "main": [
+        [
+          {
+            "node": "Fetch Last Feed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Last Feed": {
+      "main": [
+        [
+          {
+            "node": "Check Feed Due",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Feed Due": {
+      "main": [
+        [
+          {
+            "node": "Notify You",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Notify Partner",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  }
+}
