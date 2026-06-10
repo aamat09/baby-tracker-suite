@@ -3,6 +3,15 @@
 Per-component scheme `YYYY.ver.patch`. Components: `esphome/` (FW), `scad/` (3D
 print), `kicad/` (PCB). Each has its own `VERSION` file.
 
+## 2026.3.1 — 2026-06-10
+
+### Firmware (esphome) → 2026.3.1
+- **Passive piezo buzzer on GPIO2** (LEDC PWM + RTTTL): a short **tick on every
+  button press**, and a one-shot **rising chime when a pump reminder fires** (the
+  `baby/remote/alert` 0→1 edge, alongside the amber LED pulse + OLED banner). Wiring:
+  piezo between **GPIO2 and GND** — no 5 V, no resistor (GPIO2 is the only free pin
+  on the OLED build; the strapping-pin warning is benign for a passive piezo).
+
 ## 2026.3.0 — 2026-06-10
 
 ### Firmware (esphome) → 2026.3.0

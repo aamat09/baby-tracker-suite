@@ -21,7 +21,7 @@ esphome:
   friendly_name: "Baby Remote"
   project:
     name: "smarthomemaestro.baby_remote"
-    version: "2026.3.0"
+    version: "2026.3.1"
 
 esp32:
   board: esp32-c3-devkitm-1
@@ -86,6 +86,7 @@ mqtt:
             id(flash_l1) = "Pump reminder";
             id(flash_l2) = "pump due now";
             id(flash_until) = millis() + 4000;
+            id(buzzer).play("due:d=8,o=6,b=150:c,e,g,p,g");   // one-shot reminder chime
           }
           id(alert_active) = now_active;
           id(alert_primed) = true;
@@ -148,6 +149,18 @@ interval:
                 brightness: 70%
             - delay: 300ms
             - light.turn_off: {id: status_led}
+
+# Passive piezo buzzer on GPIO2 (the only free pin on the OLED build). LEDC PWM
+# drives it; RTTTL plays short tunes — a tick on each button press, a chime when a
+# reminder fires. Wiring: piezo between GPIO2 and GND (no 5V, no resistor).
+output:
+  - platform: ledc
+    pin: GPIO2
+    id: buzzer_out
+
+rtttl:
+  id: buzzer
+  output: buzzer_out
 
 logger:
   level: WARN
@@ -248,6 +261,7 @@ script:
       g: int
       b: int
     then:
+      - rtttl.play: "chirp:d=32,o=7,b=240:c"   # short tick on every press
       # Show the user's choice on the OLED for ~4s, then it falls back to the schedule.
       - lambda: |-
           id(flash_l1) = label;
