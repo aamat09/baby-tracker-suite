@@ -3,6 +3,17 @@
 Per-component scheme `YYYY.ver.patch`. Components: `esphome/` (FW), `scad/` (3D
 print), `kicad/` (PCB). Each has its own `VERSION` file.
 
+## Unreleased
+
+### Firmware (esphome)
+- **Press feedback on the OLED:** each button press now flashes the chosen
+  action (e.g. "Breast", "Sleep start") on the screen for ~4s, then the display
+  falls back to the schedule (last feed / last pump / next pump). Appears
+  instantly via `component.update`.
+- **Pump reminder banner:** when the pump-due alert hits the broker
+  (`baby/remote/alert` rising edge) the OLED pops a "Pump reminder / pump due
+  now" banner for ~4s (in addition to the existing ambient LED pulse).
+
 ## 2026.2.1 — 2026-06-06
 
 OLED test-fit refinements + a new glue-on label plate.
