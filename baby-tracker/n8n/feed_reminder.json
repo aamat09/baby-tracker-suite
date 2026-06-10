@@ -50,7 +50,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Feed reminder: notify 3h after the LAST breast/bottle feed.\n// Polls the DB; a newer feed naturally resets the clock. De-duped via static\n// data so each feed fires at most one reminder.\nconst FEED_INTERVAL_MIN = 180;            // 3 hours\nconst TZ = 'America/New_York';\n\nconst rows = $input.all();\nif (!rows.length) return [];               // no feeds logged yet\nconst r = rows[0].json;\nconst last = new Date(r.logged_at).getTime();\nconst mins = Math.floor((Date.now() - last) / 60000);\nif (mins < FEED_INTERVAL_MIN) return [];   // not due yet\n\nconst store = $getWorkflowStaticData('global');\nif (store.notifiedFor === r.logged_at) return [];   // already reminded for this feed\nstore.notifiedFor = r.logged_at;\n\nconst sub = r.event_subtype || '';\nconst dtTZ = new Date(new Date(last).toLocaleString('en-US', { timeZone: TZ }));\nlet h = dtTZ.getHours();\nconst m = dtTZ.getMinutes();\nconst ampm = h >= 12 ? 'PM' : 'AM';\nconst h12 = h % 12 || 12;\nconst t = h12 + ':' + String(m).padStart(2, '0') + ' ' + ampm;\nconst hrs = FEED_INTERVAL_MIN / 60;\n\nreturn [{ json: {\n  title: '🍼 Feed Reminder',\n  message: 'Time to feed again! Last feed' + (sub ? (' (' + sub + ')') : '') +\n           ' was at ' + t + ' — ' + hrs + ' hours ago.'\n}}];"
+        "jsCode": "// Feed reminder: notify 3h after the LAST breast/bottle feed.\n// Polls the DB; a newer feed naturally resets the clock. De-duped via static\n// data so each feed fires at most one reminder.\nconst FEED_INTERVAL_MIN = 180;            // 3 hours\nconst TZ = 'America/New_York';\n\nconst rows = $input.all();\nif (!rows.length) return [];               // no feeds logged yet\nconst r = rows[0].json;\nconst last = new Date(r.logged_at).getTime();\nconst mins = Math.floor((Date.now() - last) / 60000);\nif (mins < FEED_INTERVAL_MIN) return [];   // not due yet\n\nconst store = $getWorkflowStaticData('global');\nif (store.notifiedFor === r.logged_at) return [];   // already reminded for this feed\nstore.notifiedFor = r.logged_at;\n\nconst sub = r.event_subtype || '';\nconst dtTZ = new Date(new Date(last).toLocaleString('en-US', { timeZone: TZ }));\nlet h = dtTZ.getHours();\nconst m = dtTZ.getMinutes();\nconst ampm = h >= 12 ? 'PM' : 'AM';\nconst h12 = h % 12 || 12;\nconst t = h12 + ':' + String(m).padStart(2, '0') + ' ' + ampm;\nconst hrs = FEED_INTERVAL_MIN / 60;\n\nreturn [{ json: {\n  title: '🍼 Feed Reminder',\n  message: 'Time to feed again! Last feed' + (sub ? (' (' + sub + ')') : '') +\n           ' was at ' + t + ' — ' + hrs + ' hours ago.',\n  // Two short lines for the remote's OLED banner (baby/remote/reminder).\n  dl1: 'Feed reminder',\n  dl2: 'last ' + (sub || 'feed') + ' ' + t\n}}];"
       },
       "name": "Check Feed Due",
       "type": "n8n-nodes-base.code",
@@ -120,6 +120,31 @@
         380
       ],
       "id": "44aa58a6f8654f8f"
+    },
+    {
+      "parameters": {
+        "topic": "baby/remote/reminder",
+        "sendInputData": false,
+        "message": "={{ JSON.stringify({ l1: $json.dl1, l2: $json.dl2, secs: 4 }) }}",
+        "options": {
+          "qos": 0,
+          "retain": false
+        }
+      },
+      "name": "Notify Device",
+      "type": "n8n-nodes-base.mqtt",
+      "typeVersion": 1,
+      "position": [
+        910,
+        540
+      ],
+      "id": "613b7ec0ab6b4ccb",
+      "credentials": {
+        "mqtt": {
+          "id": "vmy0aLGuM4nrPH5D",
+          "name": "MQTT account 2"
+        }
+      }
     }
   ],
   "connections": {
@@ -155,6 +180,11 @@
           },
           {
             "node": "Notify Partner",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Notify Device",
             "type": "main",
             "index": 0
           }

@@ -6,6 +6,11 @@ print), `kicad/` (PCB). Each has its own `VERSION` file.
 ## 2026.3.0 — 2026-06-10
 
 ### Firmware (esphome) → 2026.3.0
+- **Generic on-screen banner channel:** new MQTT topic `baby/remote/reminder`
+  takes `{"l1","l2","secs"}` and pops that text on the OLED for ~`secs` (default
+  4s), then reverts to the schedule. Lets n8n (or anything) surface arbitrary
+  messages on the device — the feed reminder is the first user. The pump-due
+  `baby/remote/alert` path is unchanged.
 - **Wireless updates (OTA):** added an `ota:` block (esphome platform, password
   in `secrets.yaml`). After this build's USB flash, future updates go over WiFi.
   No HA API — the remote stays MQTT/n8n-only.
