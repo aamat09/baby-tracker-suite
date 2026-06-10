@@ -28,6 +28,13 @@ esp32:
   framework:
     type: esp-idf
 
+# Wireless firmware updates. After this first USB flash the device is reachable
+# over WiFi: `esphome run baby_remote.yaml` will offer the network port (or use
+# the ESPHome dashboard). No HA API — the remote stays MQTT/n8n-only.
+ota:
+  - platform: esphome
+    password: !secret ota_password
+
 wifi:
   ssid: !secret wifi_ssid
   password: !secret wifi_password

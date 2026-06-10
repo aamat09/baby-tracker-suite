@@ -6,6 +6,9 @@ print), `kicad/` (PCB). Each has its own `VERSION` file.
 ## 2026.3.0 — 2026-06-10
 
 ### Firmware (esphome) → 2026.3.0
+- **Wireless updates (OTA):** added an `ota:` block (esphome platform, password
+  in `secrets.yaml`). After this build's USB flash, future updates go over WiFi.
+  No HA API — the remote stays MQTT/n8n-only.
 - **Sleep is now a single/double tap:** one Sleep key sends an explicit
   `sleep/start` on a single tap and `sleep/end` on a double tap (two presses
   <1s apart) via `on_multi_click`, instead of a `toggle` the backend had to
