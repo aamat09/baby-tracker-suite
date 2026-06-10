@@ -21,7 +21,7 @@ esphome:
   friendly_name: "Baby Remote"
   project:
     name: "smarthomemaestro.baby_remote"
-    version: "2026.2.0"
+    version: "2026.3.0"
 
 esp32:
   board: esp32-c3-devkitm-1
@@ -61,12 +61,15 @@ mqtt:
       # OLED; keep tracking the flag for the ambient LED pulse below.
       - lambda: |-
           bool now_active = (x == "1" || x == "on" || x == "true");
-          if (now_active && !id(alert_active)) {
+          // Skip the banner on the first (retained) message after boot/reconnect;
+          // only a genuine 0 -> 1 transition while primed pops the reminder.
+          if (id(alert_primed) && now_active && !id(alert_active)) {
             id(flash_l1) = "Pump reminder";
             id(flash_l2) = "pump due now";
             id(flash_until) = millis() + 4000;
           }
           id(alert_active) = now_active;
+          id(alert_primed) = true;
       - component.update: oled
 
 # 3 display rows + reminder flag, pushed over MQTT (above).
@@ -84,6 +87,12 @@ globals:
     restore_value: no
     initial_value: '""'
   - id: alert_active
+    type: bool
+    restore_value: no
+    initial_value: 'false'
+  # False until the first alert message is seen, so a RETAINED "1" delivered on
+  # connect/boot only syncs state instead of popping the reminder banner.
+  - id: alert_primed
     type: bool
     restore_value: no
     initial_value: 'false'

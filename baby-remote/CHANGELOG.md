@@ -3,16 +3,22 @@
 Per-component scheme `YYYY.ver.patch`. Components: `esphome/` (FW), `scad/` (3D
 print), `kicad/` (PCB). Each has its own `VERSION` file.
 
-## Unreleased
+## 2026.3.0 — 2026-06-10
 
-### Firmware (esphome)
+### Firmware (esphome) → 2026.3.0
+- **Sleep is now a single/double tap:** one Sleep key sends an explicit
+  `sleep/start` on a single tap and `sleep/end` on a double tap (two presses
+  <1s apart) via `on_multi_click`, instead of a `toggle` the backend had to
+  resolve.
 - **Press feedback on the OLED:** each button press now flashes the chosen
   action (e.g. "Breast", "Sleep start") on the screen for ~4s, then the display
   falls back to the schedule (last feed / last pump / next pump). Appears
   instantly via `component.update`.
 - **Pump reminder banner:** when the pump-due alert hits the broker
   (`baby/remote/alert` rising edge) the OLED pops a "Pump reminder / pump due
-  now" banner for ~4s (in addition to the existing ambient LED pulse).
+  now" banner for ~4s (in addition to the existing ambient LED pulse). The
+  banner is **suppressed on the first (retained) alert after boot/reconnect**,
+  so only a genuine due-cycle pops it.
 
 ## 2026.2.1 — 2026-06-06
 
